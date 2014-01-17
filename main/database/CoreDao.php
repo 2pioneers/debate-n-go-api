@@ -39,6 +39,8 @@ class CoreDao {
 	
 	/**
 	 * Creates an instance of the mongodb connection.
+	 * 
+	 * @return CoreDao Singleton instance of this CoreDao object.
 	 */
 	public static function getInstance() {
 		if(!self::$_instance) {
@@ -61,6 +63,8 @@ class CoreDao {
 	
 	/**
 	 * Gets the voting topics collection.
+	 * 
+	 * @return mixed voting topics collection object.
 	 */
 	public function getVoting_topics() {
 		return $this->voting_topics;
@@ -68,6 +72,8 @@ class CoreDao {
 	
 	/**
 	 * Gets the user collection.
+	 * 
+	 * @return mixed user collection object.
 	 */
 	public function getUser() {
 		return $this->user;
@@ -75,6 +81,8 @@ class CoreDao {
 	
 	/**
 	 * Gets the messages collection.
+	 * 
+	 * @return mixed messages collection object.
 	 */
 	public function getMessages() {
 		return $this->messages;
