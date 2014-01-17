@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Test\\Database\\' => array($baseDir . '/test/database'),
+    'Main\\To\\' => array($baseDir . '/main/to'),
     'Main\\Database\\' => array($baseDir . '/main/database'),
 );

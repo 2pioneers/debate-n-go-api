@@ -6,15 +6,6 @@
 class UserDaoTest extends \PHPUnit_Framework_TestCase {
 	
 	/**
-	 * Tests loadUsers to see if nothing is returned when nothing is passed in.
-	 * 
-	 * @test
-	 */
-	public function passingEmptyArrayToLoadUserDataReturnsEmptyIterator() {
-		
-	}
-	
-	/**
 	 * Tests that simple user data gets loaded.
 	 * 
 	 * @test
@@ -26,7 +17,6 @@ class UserDaoTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(count($testUserList), iterator_count($results));
 		
 		foreach($results as $document) {
-			var_dump($document);
 			$this->assertContains($document['id'], $testUserList);
 		}
 	}
@@ -42,6 +32,32 @@ class UserDaoTest extends \PHPUnit_Framework_TestCase {
 			array(array("2")),
 			array(array("1", "2"))
 		);
+	}
+	
+	/**
+	 * Tests that we can pull the sample user by the unique url.
+	 * 
+	 * @test
+	 */
+	public function canPullSampleUserByUniqueUrl() {
+		$uniqueId = "pqr91g";
+		$userDao = new \Main\Database\UserDao();
+		$result = $userDao->searchUserbyUrlExtension($uniqueId);
+		
+		$this->assertEquals(1, $result->getId());
+	}
+	
+	/**
+	 * Verifies that the searchUserbyUrlExtension returns null with invalid url code.
+	 * 
+	 * @test
+	 */
+	public function pullingUserbyUrlWithoutExistingUrlReturnsNull() {
+		$uniqueId = "";
+		$userDao = new \Main\Database\UserDao();
+		$result = $userDao->searchUserbyUrlExtension($uniqueId);
+		
+		$this->assertNull($result);
 	}
 }
 

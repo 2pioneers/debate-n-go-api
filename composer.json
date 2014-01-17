@@ -8,6 +8,7 @@
 	"autoload": {
         "psr-4": {
         	"Main\\Database\\": "main/database/",
+        	"Main\\To\\": "main/to/",
         	"Test\\Database\\": "test/database/"
         }
     }
