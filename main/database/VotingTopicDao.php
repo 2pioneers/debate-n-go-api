@@ -23,7 +23,7 @@ class VotingTopicDao {
 	 * @param MongoId $userId User id to lookup by. 
 	 */
 	public function lookupTopicViaUserId($userId) {
-		//$this->coreDao->getVoting_topics()->
+		$this->coreDao->getVoting_topics()->findOne(array("users" => $userId));
 	}
 }
 
