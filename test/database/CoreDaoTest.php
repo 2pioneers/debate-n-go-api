@@ -21,7 +21,7 @@ class CoreDaoTest extends \PHPUnit_Framework_TestCase {
 	public function testSampleCollectionsAreQueried() {
 		$coreDao = \Main\Database\CoreDao::getInstance();
 		$this->assertNotEmpty($coreDao->getVoting_topics());
-		$this->assertNotEmpty($coreDao->getUser());
+		$this->assertNotEmpty($coreDao->getUsers());
 		$this->assertNotEmpty($coreDao->getMessages());
 	} 
 }

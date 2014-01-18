@@ -48,7 +48,7 @@ class UserData {
 	
 	/**
 	 * Gets the id.
-	 * @return string The id.
+	 * @return MongoId The id.
 	 */
 	public function getId() {
 		return $this->id;
@@ -56,7 +56,7 @@ class UserData {
 	
 	/**
 	 * Sets the id.
-	 * @param string $id the id to set. 
+	 * @param MongoId $id the id to set. 
 	 */
 	public function setId($id) {
 		$this->id = $id;

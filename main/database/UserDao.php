@@ -19,6 +19,7 @@ class UserDao {
 	
 	/**
 	 * Loads the users based on the list of id's.
+	 * 
 	 * @param array $userIdList simple list of user ids.
 	 * @return array list of users that can be iterated through using
 	 */
@@ -27,8 +28,8 @@ class UserDao {
 			return new \EmptyIterator();
 		}
 		
-		return $this->coreDao->getUser()->find(array(
-    		'id' => array('$in' => $userIdList)));
+		return $this->coreDao->getUsers()->find(array(
+    		'_id' => array('$in' => $userIdList)));
 	}
 	
 	/**
@@ -39,10 +40,10 @@ class UserDao {
 	 */
 	public function searchUserbyUrlExtension($uniqueUrl) {
 		$userData = null;
-		$result = $this->coreDao->getUser()->findOne(array("unique_url_extension" => $uniqueUrl));
+		$result = $this->coreDao->getUsers()->findOne(array("unique_url_extension" => $uniqueUrl));
 		if(!empty($result)) {
 			$userData = new \Main\To\UserData(
-				$result["id"],
+				$result["_id"],
 				$result["nickname"],
 				$result["street address"],
 				$result["unique_url_extension"],
@@ -50,6 +51,32 @@ class UserDao {
 			);
 		}
 		return($userData);
+	}
+	
+	/**
+	 * Inserts a new user into the database.
+	 * 
+	 * @param UserData $userData A new user object.
+	 * @return string The newly created document id.
+	 */
+	public function createUser($userData) {
+		$userData->setId(new \MongoId());
+		$insertItem = array("_id" => $userData->getId(),
+			"nickname" => $userData->getNickname(),
+			"street address" => $userData->getStreetAddress(),
+			"unique_url_extension" => $userData->getUniqueUrlExtension(),
+			"email" => $userData->getEmail());
+		$this->coreDao->getUsers()->insert($insertItem);
+		return($userData->getId());
+	}
+	
+	/**
+	 * Removes a user from the collection.
+	 * 
+	 * @param MongoId $userId The object user id.
+	 */
+	public function deleteUser($userId) {
+		return $this->coreDao->getUsers()->remove(array("_id" => $userId));
 	}
 }
 

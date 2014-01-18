@@ -16,9 +16,9 @@ class CoreDao {
 	private $voting_topics;
 	
 	/**
-	 * The user collection access point.
+	 * The users collection access point.
 	 */
-	private $user;
+	private $users;
 	
 	/**
 	 * The messages collection access point.
@@ -57,7 +57,7 @@ class CoreDao {
 		$db = $client->HOA;
 		
 		$this->voting_topics = $db->voting_topics;
-		$this->user = $db->user;
+		$this->users = $db->users;
 		$this->messages = $db->messages;
 	}
 	
@@ -71,12 +71,12 @@ class CoreDao {
 	}
 	
 	/**
-	 * Gets the user collection.
+	 * Gets the users collection.
 	 * 
-	 * @return mixed user collection object.
+	 * @return mixed users collection object.
 	 */
-	public function getUser() {
-		return $this->user;
+	public function getUsers() {
+		return $this->users;
 	}
 	
 	/**
