@@ -32,12 +32,12 @@ class LoginController {
 		$returnJsonArray = array();
 		$userData = $this->searchUserData();
 		if(!is_null($userData)) {
-			$returnJsonArray = array();
+			$returnJsonArray = array('status' => 'ok');
 			$returnJsonArray["userData"] = $userData;
 			//TODO: logic to establish associated voting options.
 			
 			//Quickly setup the session for future use.
-			$this->refreshSession();
+			$this->refreshSession($returnJsonArray);
 			
 		}
 		else {
@@ -45,6 +45,10 @@ class LoginController {
 		}
 		
 		return json_encode($returnJsonArray);
+	}
+	
+	private function createErrorArray($message) {
+		return array('status' => 'fail', 'message' => $message);
 	}
 	
 	/**
@@ -61,12 +65,17 @@ class LoginController {
 	 * 
 	 * @param array $newSessionData The data to be loaded into session.
 	 */
-	private function refreshSession($newSessionData) {
-		$lifetime = 0;
-		session_set_cookie_params($lifetime);
-		session_start();
-		
+	private function refreshSession($newSessionData) {		
 		$_SESSION["userData"] = $newSessionData["userData"];
+	}
+	
+	/**
+	 * Sets the userdao for testing.
+	 * 
+	 * @param UserDao $userDao The user dao to set.
+	 */
+	public function setUserDao($userDao) {
+		$this->userDao = $userDao;
 	}
 }
 
