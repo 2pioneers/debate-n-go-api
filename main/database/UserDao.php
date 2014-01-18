@@ -21,7 +21,7 @@ class UserDao {
 	 * Loads the users based on the list of id's.
 	 * 
 	 * @param array $userIdList simple list of user ids.
-	 * @return array list of users that can be iterated through using
+	 * @return array List of users that can be iterated through using
 	 */
 	public function loadUsers($userIdList) {
 		if(empty($userIdList)) {
@@ -36,22 +36,33 @@ class UserDao {
 	 * Obtains a user by searching for the unique url given to the user.
 	 * 
 	 * @param string $uniqueUrl The unique url sent to the user.
-	 * @return UserData The user object associated to the url.
+	 * @return null|UserData The user object associated to the url.
 	 */
-	public function searchUserbyUrlExtension($uniqueUrl) {
-		$userData = null;
+	public function searchUserByUrlExtension($uniqueUrl) {
 		$result = $this->coreDao->getUsers()->findOne(array("unique_url_extension" => $uniqueUrl));
-		if(!empty($result)) {
-			$userData = new \Main\To\UserData(
-				$result["_id"],
-				$result["nickname"],
-				$result["street address"],
-				$result["unique_url_extension"],
-				$result["email"]
+		return $this->convertUserDataDocToUserData($result);
+	}
+	
+	/**
+	 * Converts mongo document array to UserData.
+	 * 
+	 * @param array $userDataDoc The mongoDocument version of the userdata doc.
+	 * @return null|UserData The converted user object.
+	 */
+	 private function convertUserDataDocToUserData($userDataDoc) {
+	 	$userData = null;
+	 	if(!empty($userDataDoc)) {
+	 		$userData = new \Main\To\UserData(
+				$userDataDoc["_id"],
+				$userDataDoc["nickname"],
+				$userDataDoc["street address"],
+				$userDataDoc["unique_url_extension"],
+				$userDataDoc["email"]
 			);
 		}
-		return($userData);
-	}
+		
+		return $userData;
+	 }
 	
 	/**
 	 * Inserts a new user into the database.
@@ -78,6 +89,36 @@ class UserDao {
 	public function deleteUser($userId) {
 		return $this->coreDao->getUsers()->remove(array("_id" => $userId));
 	}
+	
+	/**
+	 * Updates the users nickname.
+	 * 
+	 * @param UserData $userData The user's data object.
+	 * @param string $newNickname The new nickname to be given to the user.
+	 */
+	 public function updateUsersNickname($userData, $newNickname) {
+	 	
+	 	$this->coreDao->getUsers()->update(array("_id" => $userData->getId()), 
+	 		array('$set' => array("nickname" => $newNickname)));
+	 }
+	 
+	 /**
+	  * Wrapper around the users lookup by ids to allow for a single query.
+	  * 
+	  * @param MongoId $userId The user id to look up.
+	  * @return null|UserData
+	  */
+	 public function lookupSingleUserById($userId) {
+	 	$userData = null;
+	 	$results = $this->loadUsers(array($userId));
+		
+		if(iterator_count($results) > 0) {
+			$userDataDoc = array_shift(iterator_to_array($results));
+			$userData = $this->convertUserDataDocToUserData($userDataDoc);
+		}
+		
+		return $userData;
+	 }
 }
 
 ?>

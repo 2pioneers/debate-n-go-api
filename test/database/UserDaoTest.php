@@ -6,14 +6,31 @@
 class UserDaoTest extends \PHPUnit_Framework_TestCase {
 	
 	/**
+	 * The user dao data connection.
+	 */
+	private $userDao;
+	
+	/**
 	 * Stores the created user id to pass
 	 */
 	private $storedCreatedUserId;
 	
 	/**
+	 * Test url for know id=1 user.
+	 */
+	private $knownTestUserUrl = "pqr91g";
+	
+	/**
+	 * Sets up the test.
+	 */
+	protected function setUp() {
+		$this->userDao = new \Main\Database\UserDao();
+	}
+	
+	/**
 	 * Resets data for next test.
 	 */
-	public function tearDown() {
+	protected function tearDown() {
 		$this->storedCreatedUserId = null;
 	}
 	
@@ -24,8 +41,7 @@ class UserDaoTest extends \PHPUnit_Framework_TestCase {
 	 * @dataProvider userListProvider
 	 */
 	public function canLoadTestUserData($testUserList) {
-		$userDao = new \Main\Database\UserDao();
-		$results = $userDao->loadUsers($testUserList);
+		$results = $this->userDao->loadUsers($testUserList);
 		$this->assertEquals(count($testUserList), iterator_count($results));
 		
 		foreach($results as $document) {
@@ -54,22 +70,19 @@ class UserDaoTest extends \PHPUnit_Framework_TestCase {
 	 * @test
 	 */
 	public function canPullSampleUserByUniqueUrl() {
-		$uniqueId = "pqr91g";
-		$userDao = new \Main\Database\UserDao();
-		$result = $userDao->searchUserbyUrlExtension($uniqueId);
+		$result = $this->userDao->searchUserByUrlExtension($this->knownTestUserUrl);
 		
 		$this->assertEquals(new \MongoId("000000000000000000000001"), $result->getId());
 	}
 	
 	/**
-	 * Verifies that the searchUserbyUrlExtension returns null with invalid url code.
+	 * Verifies that the searchUserByUrlExtension returns null with invalid url code.
 	 * 
 	 * @test
 	 */
 	public function pullingUserbyUrlWithoutExistingUrlReturnsNull() {
 		$uniqueId = "";
-		$userDao = new \Main\Database\UserDao();
-		$result = $userDao->searchUserbyUrlExtension($uniqueId);
+		$result = $this->userDao->searchUserByUrlExtension($uniqueId);
 		
 		$this->assertNull($result);
 	}
@@ -80,15 +93,46 @@ class UserDaoTest extends \PHPUnit_Framework_TestCase {
 	 * 
 	 * @test
 	 */
-	public function canCreateUser() {
+	public function canCreateAndDeleteUser() {
 		$userData = new \Main\To\UserData(null, "69 East", "69 Eastbound Down Road Atlanta, GA 22222", "PQW2d", "random@user.na");
-		$userDao = new \Main\Database\UserDao();
-		$this->storedCreatedUserId = $userDao->createUser($userData);
+		$this->storedCreatedUserId = $this->userDao->createUser($userData);
 		
 		$this->canLoadTestUserData(array($this->storedCreatedUserId));
 		
-		$deleteResult = $userDao->deleteUser($this->storedCreatedUserId);
+		$deleteResult = $this->userDao->deleteUser($this->storedCreatedUserId);
 		$this->assertEquals(1, $deleteResult["ok"]);
+	}
+	
+	/**
+	 * Verifies that users nickname can be updated in the db.
+	 * 
+	 * @test
+	 */
+	public function canUpdateUsersNickname() {
+		$temporaryName = "Whiskey Sour";
+		
+		$originalUser = $this->userDao->searchUserByUrlExtension($this->knownTestUserUrl);
+		
+		$this->userDao->updateUsersNickname($originalUser, $temporaryName);
+		$updatedUser = $this->userDao->searchUserByUrlExtension($this->knownTestUserUrl);
+		
+		$this->assertEquals(0, strcmp($temporaryName, $updatedUser->getNickname()));
+		$this->assertNotEquals(0, strcmp($originalUser->getNickname(), $updatedUser->getNickname()));
+		
+		$this->userDao->updateUsersNickname($updatedUser, $originalUser->getNickname());
+	}
+	
+	/**
+	 * Verifies that the single user lookup wrapper function valid.
+	 * 
+	 * @test
+	 */
+	public function canLookupSingleUserViaId() {
+		$knownUserId = new \MongoId("000000000000000000000001");
+		$foundUser = $this->userDao->lookupSingleUserById($knownUserId);
+		
+		$this->assertNotNull($foundUser);
+		$this->assertEquals(0, strcmp($knownUserId->__toString(), $foundUser->getId()->__toString()));
 	}
 }
 
