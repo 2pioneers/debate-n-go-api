@@ -48,7 +48,7 @@ class LoginController {
 	}
 	
 	private function createErrorArray($message) {
-		return array('status' => 'fail', 'message' => $message);
+		return array('status' => '404', 'message' => $message);
 	}
 	
 	/**

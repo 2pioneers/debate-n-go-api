@@ -16,8 +16,7 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function canAttemptLoginWithValidUrl($expectedResponse, $loginController) {
 		$jsonResult = $loginController->attemptLogin();
-		var_dump($jsonResult);
-		//$this->assertEquals(0, strcmp($expectedResponse, $jsonResult));
+		$this->assertEquals(0, strcmp($expectedResponse, $jsonResult));
 	}
 	
 	/**
