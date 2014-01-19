@@ -39,7 +39,7 @@ class LoginController {
 		$userData = $this->searchUserData();
 		if(!is_null($userData)) {
 			$votingTopicData = $this->votingTopicDao->lookupTopicViaUserId($userData->getId());
-			if(is_null($votingTopicData)) {
+			if(!is_null($votingTopicData)) {
 				$returnJsonArray = array('status' => 'ok');
 				$returnJsonArray["userData"] = $userData;
 				$returnJsonArray["votingTopic"] = $votingTopicData;

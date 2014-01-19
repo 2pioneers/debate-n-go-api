@@ -33,7 +33,7 @@ class VotingTopicDaoTest extends \PHPUnit_Framework_TestCase {
 	 * @test
 	 */
 	public function passingInvalidUserIdToVotingTopicReturnsNull() {
-		$result = $this->votingTopicDao->lookupTopicViaUserId(new \MongoId("ZZZZZZZZZZZZZZZZZZZZZZZZ"));
+		$result = $this->votingTopicDao->lookupTopicViaUserId(new \MongoId("100000000000000000000000"));
 		$this->assertNull($result);
 	}
 }

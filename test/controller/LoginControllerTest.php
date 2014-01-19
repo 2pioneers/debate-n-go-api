@@ -16,6 +16,7 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function canAttemptLoginWithValidUrl($expectedResponse, $loginController) {
 		$jsonResult = $loginController->attemptLogin();
+		//var_dump($jsonResult);
 		$this->assertEquals(0, strcmp($expectedResponse, $jsonResult));
 	}
 	
@@ -55,13 +56,13 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 			->method('searchUserByUrlExtension')
 			->with($fakeurl)
 			->will($this->returnValue(null));
-		$userFailController = new \Main\Controller\LoginController($userFailUserMock);
-		$userFailController->setUserDao($failMock);
+		$userFailController = new \Main\Controller\LoginController($fakeurl);
+		$userFailController->setUserDao($userFailUserMock);
 		$userFailSet = array(json_encode(array('status' => '404', 'message' => "User was not found. Do you have the wrong url?")), $userFailController);
 		
 		//Fails because of voting topic
-		$userFailUserMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension'));
-		$userFailUserMock->expects($this->once())
+		$voteFailUserMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension'));
+		$voteFailUserMock->expects($this->once())
 			->method('searchUserByUrlExtension')
 			->with($successExpected->getUniqueUrlExtension())
 			->will($this->returnValue($successExpected));
@@ -72,8 +73,8 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 			->with($successExpected->getId())
 			->will($this->returnValue(null));
 		
-		$voteTopicFailController = new \Main\Controller\LoginController($voteTopicFailMock);
-		$voteTopicFailController->setUserDao($voteTopicFailMock);
+		$voteTopicFailController = new \Main\Controller\LoginController($successExpected->getUniqueUrlExtension());
+		$voteTopicFailController->setUserDao($voteFailUserMock);
 		$voteTopicFailController->setVotingTopicDao($voteTopicFailMock);
 		$votingTopicFailSet = array(json_encode(array('status' => '404', 'message' => "Voting topic was not found, it may be deactivated?")), $voteTopicFailController);
 		
