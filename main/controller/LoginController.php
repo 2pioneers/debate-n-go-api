@@ -11,6 +11,11 @@ class LoginController {
 	private $userDao;
 	
 	/**
+	 * The voting topic dao.
+	 */
+	private $votingTopicDao;
+	
+	/**
 	 * The unique login url to be given to an employee.
 	 */
 	private $uniqueLoginUrl;
@@ -20,6 +25,7 @@ class LoginController {
 	 */
 	public function __construct($uniqueLoginUrl) {
 		$this->userDao = new \Main\Database\UserDao();
+		$this->votingTopicDao = new \Main\Database\VotingTopicDao();
 		$this->uniqueLoginUrl = $uniqueLoginUrl;
 	}
 	
@@ -32,13 +38,17 @@ class LoginController {
 		$returnJsonArray = array();
 		$userData = $this->searchUserData();
 		if(!is_null($userData)) {
-			$returnJsonArray = array('status' => 'ok');
-			$returnJsonArray["userData"] = $userData;
-			//TODO: logic to establish associated voting options.
-			
-			//Quickly setup the session for future use.
-			$this->refreshSession($returnJsonArray);
-			
+			$votingTopicData = $this->votingTopicDao->lookupTopicViaUserId($userData->getId());
+			if(is_null($votingTopicData)) {
+				$returnJsonArray = array('status' => 'ok');
+				$returnJsonArray["userData"] = $userData;
+				$returnJsonArray["votingTopic"] = $votingTopicData;
+				//Quickly setup the session for future use.
+				$this->refreshSession($returnJsonArray);
+			}
+			else {
+				$returnJsonArray = $this->createErrorArray("Voting topic was not found, it may be deactivated?");
+			}
 		}
 		else {
 			$returnJsonArray = $this->createErrorArray("User was not found. Do you have the wrong url?");
@@ -76,6 +86,15 @@ class LoginController {
 	 */
 	public function setUserDao($userDao) {
 		$this->userDao = $userDao;
+	}
+	
+	/**
+	 * Sets the Voting Topic dao.
+	 * 
+	 * @param VotingTopicDao $votingTopicDao The voting topic dao to set.
+	 */
+	public function setVotingTopicDao($votingTopicDao) {
+		$this->votingTopicDao = $votingTopicDao;
 	}
 }
 

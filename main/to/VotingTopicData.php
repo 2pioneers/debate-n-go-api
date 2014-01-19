@@ -3,7 +3,7 @@
 /**
  * Container object for the voting topic data.
  */
-class VotingTopicData {
+class VotingTopicData implements \JsonSerializable {
 
 	/**
 	 * The voting topic id.
@@ -45,6 +45,21 @@ class VotingTopicData {
 		$this->status = $status;
 		$this->options = $options;
 		$this->users = $users;
+	}
+	
+	/**
+	 * Encodes the TO so that it can be serialized and passed over json.
+	 * 
+	 * @return array array representation of the data object.
+	 */
+	public function jsonSerialize() {
+		return array(
+			'id' => $this->getId()->__toString(),
+			'description' => $this->getDescription(),
+			'status' => $this->getStatus(),
+			'options' => $this->getOptions(),
+			'users' => $this->getUsers()
+		);
 	}
 	
 	/**

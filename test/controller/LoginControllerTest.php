@@ -28,26 +28,56 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 		$dataSet = array();
 		
 		$successExpected = new \Main\To\UserData(new \MongoId("000000000000000000000001"), "69 East", "69 Eastbound Down Road Atlanta, GA 22222", "PQW2d", "random@user.na");
-		$successMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension'));
-		$successMock->expects($this->once())
+		$successVotingTopicExpected = new \Main\To\VotingTopicData(new \MongoId("000000000000000000000001"), "", "", array(), array());
+		
+		//Fully successful
+		$successUserMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension'));
+		$successUserMock->expects($this->once())
 			->method('searchUserByUrlExtension')
 			->with($successExpected->getUniqueUrlExtension())
 			->will($this->returnValue($successExpected));
-		$successController = new \Main\Controller\LoginController($successExpected->getUniqueUrlExtension());
-		$successController->setUserDao($successMock);
-		$successSet = array(json_encode(array('status' => 'ok', 'userData' => $successExpected)), $successController);
+			
+		$successVoteMock = $this->getMock('Main\Database\VotingTopicDao', array('lookupTopicViaUserId'));
+		$successVoteMock->expects($this->once())
+			->method('lookupTopicViaUserId')
+			->with($successExpected->getId())
+			->will($this->returnValue($successVotingTopicExpected));
 		
+		$successController = new \Main\Controller\LoginController($successExpected->getUniqueUrlExtension());
+		$successController->setUserDao($successUserMock);
+		$successController->setVotingTopicDao($successVoteMock);
+		$successSet = array(json_encode(array('status' => 'ok', 'userData' => $successExpected, 'votingTopic' => $successVotingTopicExpected)), $successController);
+		
+		//Fails because of url
 		$fakeurl = "fakeurl";
-		$failMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension'));
-		$failMock->expects($this->once())
+		$userFailUserMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension'));
+		$userFailUserMock->expects($this->once())
 			->method('searchUserByUrlExtension')
 			->with($fakeurl)
 			->will($this->returnValue(null));
-		$failController = new \Main\Controller\LoginController($fakeurl);
-		$failController->setUserDao($failMock);
-		$failSet = array(json_encode(array('status' => '404', 'message' => "User was not found. Do you have the wrong url?")), $failController);
+		$userFailController = new \Main\Controller\LoginController($userFailUserMock);
+		$userFailController->setUserDao($failMock);
+		$userFailSet = array(json_encode(array('status' => '404', 'message' => "User was not found. Do you have the wrong url?")), $userFailController);
 		
-		array_push($dataSet, $successSet, $failSet);
+		//Fails because of voting topic
+		$userFailUserMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension'));
+		$userFailUserMock->expects($this->once())
+			->method('searchUserByUrlExtension')
+			->with($successExpected->getUniqueUrlExtension())
+			->will($this->returnValue($successExpected));
+		
+		$voteTopicFailMock = $this->getMock('Main\Database\VotingTopicDao', array('lookupTopicViaUserId'));
+		$voteTopicFailMock->expects($this->once())
+			->method('lookupTopicViaUserId')
+			->with($successExpected->getId())
+			->will($this->returnValue(null));
+		
+		$voteTopicFailController = new \Main\Controller\LoginController($voteTopicFailMock);
+		$voteTopicFailController->setUserDao($voteTopicFailMock);
+		$voteTopicFailController->setVotingTopicDao($voteTopicFailMock);
+		$votingTopicFailSet = array(json_encode(array('status' => '404', 'message' => "Voting topic was not found, it may be deactivated?")), $voteTopicFailController);
+		
+		array_push($dataSet, $successSet, $userFailSet, $votingTopicFailSet);
 		return $dataSet;
 	}
 }

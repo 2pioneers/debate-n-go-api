@@ -24,8 +24,17 @@ class VotingTopicDaoTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function canPullVotingTopicByUserId() {
 		$result = $this->votingTopicDao->lookupTopicViaUserId(new \MongoId("000000000000000000000001"));
-		
 		$this->assertEquals(new \MongoId("000000000000000000000004"), $result->getId());
+	}
+	
+	/**
+	 * Tests that we get null back when passing invalid id to voting topic lookup.
+	 * 
+	 * @test
+	 */
+	public function passingInvalidUserIdToVotingTopicReturnsNull() {
+		$result = $this->votingTopicDao->lookupTopicViaUserId(new \MongoId("ZZZZZZZZZZZZZZZZZZZZZZZZ"));
+		$this->assertNull($result);
 	}
 }
 
