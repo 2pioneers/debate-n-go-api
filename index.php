@@ -13,6 +13,10 @@ $app->get('/login/:uniqueurl', function($uniqueUrl) {
 	echo($loginController->attemptLogin());
 });
 
+$app->get('/updateUsername/:newUsername', function($newUsername) {
+	//TODO: write controller logic to update the user's nickname.
+});
+
 $app->run();
 
 ?>
