@@ -9,12 +9,18 @@ $app = new \Slim\Slim();
 		
 $app->get('/login/:uniqueurl', function($uniqueUrl) {
 	$loginController = new \Main\Controller\LoginController($uniqueUrl);
+	$response = $loginController->attemptLogin();
+	$loginController->refreshSession();
 	$app->response()->header("Content-Type", "application/json");
-	echo($loginController->attemptLogin());
+	echo($response);
 });
 
 $app->get('/updateUsername/:newUsername', function($newUsername) {
-	//TODO: write controller logic to update the user's nickname.
+	$userInformationController = new Main\Controller\UserInformationController();
+	$userInformationController->checkSession();
+	$response = $userInformationController->updateUsername($newUsername);
+	$app->response()->header("Content-Type", "application/json");
+	echo($response);
 });
 
 $app->run();

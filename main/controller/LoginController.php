@@ -11,6 +11,11 @@ class LoginController {
 	private $userDao;
 	
 	/**
+	 * The user data.
+	 */
+	 private $userData;
+	
+	/**
 	 * The voting topic dao.
 	 */
 	private $votingTopicDao;
@@ -24,6 +29,7 @@ class LoginController {
 	 * Constructs the controller for use.
 	 */
 	public function __construct($uniqueLoginUrl) {
+		$this->userData = null;
 		$this->userDao = new \Main\Database\UserDao();
 		$this->votingTopicDao = new \Main\Database\VotingTopicDao();
 		$this->uniqueLoginUrl = $uniqueLoginUrl;
@@ -36,7 +42,7 @@ class LoginController {
 	 */
 	public function attemptLogin() {
 		$returnJsonArray = array();
-		$userData = $this->searchUserData();
+		$this->userData = $this->searchUserData();
 		if(!is_null($userData)) {
 			$votingTopicData = $this->votingTopicDao->lookupTopicViaUserId($userData->getId());
 			if(!is_null($votingTopicData)) {
@@ -72,11 +78,11 @@ class LoginController {
 	
 	/**
 	 * Refreshes the session variable with passed in data.
-	 * 
-	 * @param array $newSessionData The data to be loaded into session.
 	 */
-	private function refreshSession($newSessionData) {		
-		$_SESSION["userData"] = $newSessionData["userData"];
+	public function refreshSession() {
+		if(!is_null($this->userData)) {
+			$_SESSION["userData"] = $this->userData;
+		}
 	}
 	
 	/**
