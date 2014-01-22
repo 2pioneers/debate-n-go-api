@@ -21,9 +21,6 @@ $app->get('/updateUsername/:newUsername', function($newUsername) {
 	if($userInformationController->checkSession()) {
 		$response = $userInformationController->updateUsername($newUsername);
 	}
-	else {
-		
-	}
 	$app->response()->header("Content-Type", "application/json");
 	echo($response);
 });
