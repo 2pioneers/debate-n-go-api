@@ -95,11 +95,19 @@ class UserDao {
 	 * 
 	 * @param UserData $userData The user's data object.
 	 * @param string $newNickname The new nickname to be given to the user.
+	 * 
+	 * @return bool returns false if there was an issue inserting into the database.
 	 */
 	 public function updateUsersNickname($userData, $newNickname) {
-	 	
-	 	$this->coreDao->getUsers()->update(array("_id" => $userData->getId()), 
-	 		array('$set' => array("nickname" => $newNickname)));
+	 	try {
+		 	$this->coreDao->getUsers()->update(array("_id" => $userData->getId()), 
+		 		array('$set' => array("nickname" => $newNickname)));
+		}
+		catch(MongoException $er) {
+			//TODO: Do some error logging here.
+			return false;
+		}
+		return true;
 	 }
 	 
 	 /**

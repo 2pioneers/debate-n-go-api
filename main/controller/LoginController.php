@@ -49,7 +49,6 @@ class LoginController {
 				$returnJsonArray = array('status' => 'ok');
 				$returnJsonArray["userData"] = $userData;
 				$returnJsonArray["votingTopic"] = $votingTopicData;
-				//Quickly setup the session for future use.
 				$this->refreshSession($returnJsonArray);
 			}
 			else {
