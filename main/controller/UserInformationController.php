@@ -21,7 +21,7 @@ class UserInformationController {
 	 * Updates the user's username if the user is actually logged in.
 	 */
 	public function updateUsername($newUsername) {
-		
+		$this->userDao->updateUsersNickname($_SESSION['userData'], $newUsername);
 	}
 	
 	/**

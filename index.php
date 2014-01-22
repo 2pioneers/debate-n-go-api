@@ -17,8 +17,13 @@ $app->get('/login/:uniqueurl', function($uniqueUrl) {
 
 $app->get('/updateUsername/:newUsername', function($newUsername) {
 	$userInformationController = new Main\Controller\UserInformationController();
-	$userInformationController->checkSession();
-	$response = $userInformationController->updateUsername($newUsername);
+	$response = json_encode(array('status' => '404', 'message' => "User not in session. Please log in will unique url."));
+	if($userInformationController->checkSession()) {
+		$response = $userInformationController->updateUsername($newUsername);
+	}
+	else {
+		
+	}
 	$app->response()->header("Content-Type", "application/json");
 	echo($response);
 });
