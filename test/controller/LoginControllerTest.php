@@ -37,17 +37,25 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 			->method('searchUserByUrlExtension')
 			->with($successExpected->getUniqueUrlExtension())
 			->will($this->returnValue($successExpected));
+
+		$successUserMock->expects($this->once())
+			->method('loadUsers')
+			->with($successVotingTopicExpected->getUsers())
+			->will($this->returnValue(array()));
 			
 		$successVoteMock = $this->getMock('Main\Database\VotingTopicDao', array('lookupTopicViaUserId'));
 		$successVoteMock->expects($this->once())
 			->method('lookupTopicViaUserId')
 			->with($successExpected->getId())
 			->will($this->returnValue($successVotingTopicExpected));
-		
+			
 		$successController = new \Main\Controller\LoginController($successExpected->getUniqueUrlExtension());
 		$successController->setUserDao($successUserMock);
 		$successController->setVotingTopicDao($successVoteMock);
-		$successSet = array(json_encode(array('status' => 'ok', 'userData' => $successExpected, 'votingTopic' => $successVotingTopicExpected)), $successController);
+		$successSet = array(json_encode(
+						array('status' => 'ok', 
+							'userData' => $successExpected,
+							'votingTopic' => $successVotingTopicExpected, 'users' => array())), $successController);
 		
 		//Fails because of url
 		$fakeurl = "fakeurl";

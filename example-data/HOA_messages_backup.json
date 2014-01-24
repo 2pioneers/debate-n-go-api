@@ -1,0 +1,1 @@
+{ "_id" : { "$oid" : "000000000000000000000003" }, "user" : { "$oid" : "000000000000000000000001" }, "message" : "I think this because", "children" : [ { "user" : { "$oid" : "000000000000000000000002" }, "response" : "Well you are an idiot." } ] }
