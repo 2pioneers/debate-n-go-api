@@ -42,7 +42,7 @@ class UserInformationController {
 	 * 
 	 * @return bool true if the user data is in the session.
 	 */
-	public function checkSession() {
+	private function checkSession() {
 		if(isset($_SESSION['userData'])) {
 			return true;
 		}
