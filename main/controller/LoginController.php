@@ -11,11 +11,6 @@ class LoginController {
 	private $userDao;
 	
 	/**
-	 * The user data.
-	 */
-	 private $userData;
-	
-	/**
 	 * The voting topic dao.
 	 */
 	private $votingTopicDao;
@@ -42,7 +37,7 @@ class LoginController {
 	 */
 	public function attemptLogin() {
 		$returnJsonArray = array();
-		$this->userData = $this->searchUserData();
+		$userData = $this->searchUserData();
 		if(!is_null($userData)) {
 			$votingTopicData = $this->votingTopicDao->lookupTopicViaUserId($userData->getId());
 			if(!is_null($votingTopicData)) {

@@ -32,17 +32,16 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 		$successVotingTopicExpected = new \Main\To\VotingTopicData(new \MongoId("000000000000000000000001"), "", "", array(), array());
 		
 		//Fully successful
-		$successUserMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension'));
+		$successUserMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension', 'loadUsers'));
 		$successUserMock->expects($this->once())
 			->method('searchUserByUrlExtension')
 			->with($successExpected->getUniqueUrlExtension())
 			->will($this->returnValue($successExpected));
-
 		$successUserMock->expects($this->once())
 			->method('loadUsers')
 			->with($successVotingTopicExpected->getUsers())
 			->will($this->returnValue(array()));
-			
+
 		$successVoteMock = $this->getMock('Main\Database\VotingTopicDao', array('lookupTopicViaUserId'));
 		$successVoteMock->expects($this->once())
 			->method('lookupTopicViaUserId')
@@ -55,11 +54,12 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 		$successSet = array(json_encode(
 						array('status' => 'ok', 
 							'userData' => $successExpected,
-							'votingTopic' => $successVotingTopicExpected, 'users' => array())), $successController);
+							'votingTopic' => $successVotingTopicExpected,
+							'users' => array())), $successController);
 		
 		//Fails because of url
 		$fakeurl = "fakeurl";
-		$userFailUserMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension'));
+		$userFailUserMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension', 'loadUsers'));
 		$userFailUserMock->expects($this->once())
 			->method('searchUserByUrlExtension')
 			->with($fakeurl)
@@ -74,6 +74,11 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 			->method('searchUserByUrlExtension')
 			->with($successExpected->getUniqueUrlExtension())
 			->will($this->returnValue($successExpected));
+		
+		$voteFailUserMock->expects($this->once())
+			->method('loadUsers')
+			->with(array())
+			->will($this->returnValue(array()));
 		
 		$voteTopicFailMock = $this->getMock('Main\Database\VotingTopicDao', array('lookupTopicViaUserId'));
 		$voteTopicFailMock->expects($this->once())
