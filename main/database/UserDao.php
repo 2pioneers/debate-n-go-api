@@ -40,7 +40,7 @@ class UserDao {
 	 */
 	public function searchUserByUrlExtension($uniqueUrl) {
 		$result = $this->coreDao->getUsers()->findOne(array("unique_url_extension" => $uniqueUrl));
-		return $this->convertUserDataDocToUserData($result);
+		return UserDao::convertUserDataDocToUserData($result);
 	}
 	
 	/**
@@ -49,7 +49,7 @@ class UserDao {
 	 * @param array $userDataDoc The mongoDocument version of the userdata doc.
 	 * @return null|UserData The converted user object.
 	 */
-	 private function convertUserDataDocToUserData($userDataDoc) {
+	 public static function convertUserDataDocToUserData($userDataDoc) {
 	 	$userData = null;
 	 	if(!empty($userDataDoc)) {
 	 		$userData = new \Main\To\UserData(

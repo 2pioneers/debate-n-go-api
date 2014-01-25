@@ -3,7 +3,7 @@
 /**
  * Voting topic data functions.
  */
-class VotingTopicDao {
+class VotingTopicDao implements \JsonSerializable {
 	
 	/**
 	 * Core Dao.
@@ -25,7 +25,31 @@ class VotingTopicDao {
 	 */
 	public function lookupTopicViaUserId($userId) {
 		$result = $this->coreDao->getVoting_topics()->findOne(array("users" => $userId));
-		return $this->convertVotingTopicDataDocToVotingTopicData($result);
+		$convertedResult = $this->convertVotingTopicDataDocToVotingTopicData($result);
+		
+		$usersIter = $this->userDao->loadUsers($convertedResult["users"]);
+		$users = $this->convertUserIteratorToIdStrippedArray($usersIter);
+		$convertedResult["users"] = $users;
+		
+		
+	}
+	
+	/**
+	 * Strips the mongoid from all the passed in user objects.
+	 * 
+	 * @param Iterator $usersIter The iterator version of the user objects.
+	 * @return array A converted array of user objects with id stripped.
+	 */
+	private function convertUserIteratorToIdStrippedArray($usersIter) {
+		$convertedUsers = array();
+		
+		foreach($usersIter as $userDataDoc) {
+			$user = UserDao::convertUserDataDocToUserData($userDataDoc);
+			$user->setId(null);
+			array_push($convertedUsers, $user);
+		}
+		
+		return $convertedUsers;
 	}
 	
 	/**
@@ -70,7 +94,9 @@ class VotingTopicDao {
 	  * @return bool false if there was a database issue.
 	  */
 	 private function removeUserVote($votingTopicData, $userData) {
-	 	$this->coreDao->getVoting_topics()->remove();
+	 	//TODO: Update user options
+	 	//$this->coreDao->getOptions()->update(array("users" => $votingTopicData->));
+		//{"users": ObjectId("000000000000000000000001")}, { $pull: {"users": ObjectId("000000000000000000000001")}})
 	 }
 	 
 	 /**
@@ -81,7 +107,7 @@ class VotingTopicDao {
 	  * @return bool false if there was a database issue.
 	  */
 	 private function addUserVote($votingTopicData, $userData, $newVote) {
-		
+		//db.options.update({"_id": ObjectId("000000000000000000000006")}, { $push: {"users": ObjectId("000000000000000000000001")}})
 	 }
 	 
 	 /**
