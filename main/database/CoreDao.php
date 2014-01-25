@@ -100,7 +100,7 @@ class CoreDao {
 	 * @return mixed options collection object.
 	 */
 	public function getOptions() {
-		return $this->options();
+		return $this->options;
 	}
 }
 

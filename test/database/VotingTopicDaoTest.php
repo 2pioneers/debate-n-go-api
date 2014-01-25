@@ -25,6 +25,12 @@ class VotingTopicDaoTest extends \PHPUnit_Framework_TestCase {
 	public function canPullVotingTopicByUserId() {
 		$result = $this->votingTopicDao->lookupTopicViaUserId(new \MongoId("000000000000000000000001"));
 		$this->assertEquals(new \MongoId("000000000000000000000004"), $result->getId());
+		
+		// var_dump($result);
+		// echo "\n\n================================================\n";
+		// $tmp = $result->getOptions();
+		// $tmp2 = $tmp[2]->getUsers();
+		// var_dump($tmp);
 	}
 	
 	/**

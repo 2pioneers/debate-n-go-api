@@ -1,4 +1,4 @@
-<?php
+<?php namespace Main\To;
 
 /**
  * TO to hold voting options data.

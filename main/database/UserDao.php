@@ -21,7 +21,7 @@ class UserDao {
 	 * Loads the users based on the list of id's.
 	 * 
 	 * @param array $userIdList simple list of user ids.
-	 * @return array List of users that can be iterated through using
+	 * @return Iterator List of users that can be iterated through using
 	 */
 	public function loadUsers($userIdList) {
 		if(empty($userIdList)) {

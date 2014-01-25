@@ -3,7 +3,7 @@
 /**
  * Voting topic data functions.
  */
-class VotingTopicDao implements \JsonSerializable {
+class VotingTopicDao {
 	
 	/**
 	 * Core Dao.
@@ -24,28 +24,52 @@ class VotingTopicDao implements \JsonSerializable {
 	 * @return null|VotingTopicDao The voting topics object.
 	 */
 	public function lookupTopicViaUserId($userId) {
+		$userDao = new \Main\Database\UserDao();
 		$result = $this->coreDao->getVoting_topics()->findOne(array("users" => $userId));
 		$convertedResult = $this->convertVotingTopicDataDocToVotingTopicData($result);
-		
-		$usersIter = $this->userDao->loadUsers($convertedResult["users"]);
-		$users = $this->convertUserIteratorToIdStrippedArray($usersIter);
-		$convertedResult["users"] = $users;
-		
-		
+		if(!is_null($convertedResult)) {
+			//Load base users
+			$usersIter = $userDao->loadUsers($convertedResult->getUsers());
+			$users = $this->convertUserIteratorToUserDataArray($usersIter);
+			//$convertedResult["users"] = $users;
+			
+			//Load options
+			$optionsIter = $this->coreDao->getOptions()->find(array(
+	    		'_id' => array('$in' => $convertedResult->getOptions())));
+			$options = array();
+			
+			foreach($optionsIter as $option) {
+				
+				$option = $this->convertVotingOptionsDataDocToVotingOptionsData($option);
+				$optionUserList = array();
+				foreach($option->getUsers() as $optionUserId) {
+					foreach($users as $user) {
+						if($optionUserId == $user->getId()) {
+							array_push($optionUserList, $user);
+						}
+					}
+				}
+				$option->setUsers($optionUserList);
+				array_push($options, $option);
+			}
+			
+			$convertedResult->setOptions($options);
+			$convertedResult->setUsers(array());
+		}
+		return $convertedResult;
 	}
 	
 	/**
-	 * Strips the mongoid from all the passed in user objects.
+	 * Maps the iterator results to an array of UserData objects.
 	 * 
 	 * @param Iterator $usersIter The iterator version of the user objects.
-	 * @return array A converted array of user objects with id stripped.
+	 * @return array A converted array of user objects.
 	 */
-	private function convertUserIteratorToIdStrippedArray($usersIter) {
+	private function convertUserIteratorToUserDataArray($usersIter) {
 		$convertedUsers = array();
 		
 		foreach($usersIter as $userDataDoc) {
 			$user = UserDao::convertUserDataDocToUserData($userDataDoc);
-			$user->setId(null);
 			array_push($convertedUsers, $user);
 		}
 		
@@ -71,6 +95,26 @@ class VotingTopicDao implements \JsonSerializable {
 		}
 		
 		return $votingTopicData;
+	 }
+	 
+	 /**
+	 * Converts mongo options document array to VotingOptionsData.
+	 * 
+	 * @param array $votingOptionsDataDoc The mongoDocument version of the VotingTopicData doc.
+	 * @return null|VotingOptionsData The converted Voting options object.
+	 */
+	 private function convertVotingOptionsDataDocToVotingOptionsData($votingOptionsDataDoc) {
+	 	$votingOptionsData = null;
+	 	if(!empty($votingOptionsDataDoc)) {
+	 		$votingOptionsData = new \Main\To\VotingOptionsData(
+				$votingOptionsDataDoc["_id"],
+				$votingOptionsDataDoc["description"],
+				$votingOptionsDataDoc["users"],
+				$votingOptionsDataDoc["messages"]
+			);
+		}
+		
+		return $votingOptionsData;
 	 }
 	 
 	 /**
