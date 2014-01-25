@@ -48,6 +48,50 @@ class VotingTopicDao {
 		
 		return $votingTopicData;
 	 }
+	 
+	 /**
+	  * Changes a user's vote in the system.
+	  * 
+	  * @param VotingTopicData $votinTopicData The current voting topic.
+	  * @param UserData $userData The user's information.
+	  * @param string $newVote The new option to switch the user to.
+	  * @return array The updated list of options.
+	  */
+	 public function updateUserVote($votingTopicData, $userData, $newVote) {
+	 	$this->removeUserVote($votingTopicData, $userData);
+		$this->addUserVote($votingTopicData, $userData, $newVote);
+		$this->getVotingTopicOptions($votingTopicData);
+	 }
+	 
+	 /**
+	  * Removes the users vote from an option.
+	  * @param VotingTopicData $votinTopicData The current voting topic.
+	  * @param UserData $userData The user's information.
+	  * @return bool false if there was a database issue.
+	  */
+	 private function removeUserVote($votingTopicData, $userData) {
+	 	$this->coreDao->getVoting_topics()->remove();
+	 }
+	 
+	 /**
+	  * Removes the users vote from an option.
+	  * @param VotingTopicData $votinTopicData The current voting topic.
+	  * @param UserData $userData The user's information.
+	  * @param string $newVote The new option to switch the user to.
+	  * @return bool false if there was a database issue.
+	  */
+	 private function addUserVote($votingTopicData, $userData, $newVote) {
+		
+	 }
+	 
+	 /**
+	  * Removes the users vote from an option.
+	  * @param VotingTopicData $votinTopicData The current voting topic.
+	  * @return array The updated list of options.
+	  */
+	 private function getVotingTopicOptions($votingTopicData) {
+	 	
+	 }
 }
 
 ?>
