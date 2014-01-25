@@ -132,36 +132,33 @@ class VotingTopicDao {
 	 }
 	 
 	 /**
-	  * Removes the users vote from an option.
+	  * Removes the users vote from any option.
 	  * @param VotingTopicData $votinTopicData The current voting topic.
-	  * @param UserData $userData The user's information.
+	  * @param MongoId $userId The user's id number.
 	  * @return bool false if there was a database issue.
 	  */
-	 private function removeUserVote($votingTopicData, $userData) {
-	 	//TODO: Update user options
-	 	//$this->coreDao->getOptions()->update(array("users" => $votingTopicData->));
-		//{"users": ObjectId("000000000000000000000001")}, { $pull: {"users": ObjectId("000000000000000000000001")}})
+	 private function removeUserVote($votingTopicData, $userId) {
+	 	$this->coreDao->getOptions()->update(array("users" => $userId), array('$pull' => array("users" => $userId)));
 	 }
 	 
 	 /**
 	  * Removes the users vote from an option.
-	  * @param VotingTopicData $votinTopicData The current voting topic.
-	  * @param UserData $userData The user's information.
-	  * @param string $newVote The new option to switch the user to.
+	  * @param MongoId $optionId The voting topic option id.
+	  * @param MongoId $userId The user's id number.
 	  * @return bool false if there was a database issue.
 	  */
-	 private function addUserVote($votingTopicData, $userData, $newVote) {
-		//db.options.update({"_id": ObjectId("000000000000000000000006")}, { $push: {"users": ObjectId("000000000000000000000001")}})
+	 private function addUserVote($optionId, $userId) {
+	 	$this->coreDao->getOptions()->update(array("_id" => $optionId), array('$push' => array("users" => $userId)));
 	 }
 	 
-	 /**
-	  * Removes the users vote from an option.
-	  * @param VotingTopicData $votinTopicData The current voting topic.
-	  * @return array The updated list of options.
-	  */
-	 private function getVotingTopicOptions($votingTopicData) {
-	 	
-	 }
+	 // /**
+	  // * Gets the update voting options.
+	  // * @param VotingTopicData $votinTopicData The current voting topic.
+	  // * @return array The updated list of options.
+	  // */
+	 // private function getVotingTopicOptions($votingTopicData) {
+// 	 	
+	 // }
 }
 
 ?>
