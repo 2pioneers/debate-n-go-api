@@ -1,7 +1,7 @@
 <?php
 require 'vendor/autoload.php';
 
-$liftime = 0;
+$lifetime = 0;
 session_set_cookie_params($lifetime);
 session_start();
 
