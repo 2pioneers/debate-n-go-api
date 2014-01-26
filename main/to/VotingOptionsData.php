@@ -3,7 +3,7 @@
 /**
  * TO to hold voting options data.
  */
-class VotingOptionsData {
+class VotingOptionsData implements \JsonSerializable {
 	
 	/**
 	 * The id of the option.

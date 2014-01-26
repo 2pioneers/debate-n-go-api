@@ -53,6 +53,7 @@ class VotingTopicDao {
 				array_push($options, $option);
 			}
 			
+			var_dump($options);
 			$convertedResult->setOptions($options);
 			$convertedResult->setUsers(array());
 		}

@@ -44,7 +44,6 @@ class LoginController {
 				$returnJsonArray = array('status' => 'ok');
 				$returnJsonArray["userData"] = $userData;
 				$returnJsonArray["votingTopic"] = $votingTopicData;
-				$returnJsonArray["users"] = $this->userDao->loadUsers($votingTopicData->getUsers());
 				$this->refreshSession($returnJsonArray);
 			}
 			else {
