@@ -40,7 +40,7 @@ class VotingTopicDao {
 			
 			foreach($optionsIter as $option) {
 				
-				$option = VotingOptionDao::convertVotingOptionsDataDocToVotingOptionsData($option);
+				$option = \Main\Database\VotingOptionDao::convertVotingOptionsDataDocToVotingOptionsData($option);
 				$optionUserList = array();
 				foreach($option->getUsers() as $optionUserId) {
 					foreach($users as $user) {
@@ -53,7 +53,6 @@ class VotingTopicDao {
 				array_push($options, $option);
 			}
 			
-			var_dump($options);
 			$convertedResult->setOptions($options);
 			$convertedResult->setUsers(array());
 		}

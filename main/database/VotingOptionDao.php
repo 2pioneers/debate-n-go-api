@@ -1,4 +1,4 @@
-<?php namespace Main\To;
+<?php namespace Main\Database;
 
 /**
  * Manages database interactions for vote options.
