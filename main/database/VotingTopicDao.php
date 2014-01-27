@@ -34,30 +34,43 @@ class VotingTopicDao {
 			//$convertedResult["users"] = $users;
 			
 			//Load options
-			$optionsIter = $this->coreDao->getOptions()->find(array(
-	    		'_id' => array('$in' => $convertedResult->getOptions())));
-			$options = array();
+			$votingOptionDao = new \Main\Database\VotingOptionDao();
+			$optionsIter = $votingOptionDao->loadOptions($convertedResult->getOptions());
+			$options = $this->injectUsersIntoOptions($users, $optionsIter);
 			
-			foreach($optionsIter as $option) {
-				
-				$option = $this->convertVotingOptionsDataDocToVotingOptionsData($option);
-				$optionUserList = array();
-				foreach($option->getUsers() as $optionUserId) {
-					foreach($users as $user) {
-						if($optionUserId == $user->getId()) {
-							array_push($optionUserList, $user);
-						}
-					}
-				}
-				$option->setUsers($optionUserList);
-				array_push($options, $option);
-			}
-			
-			var_dump($options);
 			$convertedResult->setOptions($options);
 			$convertedResult->setUsers(array());
 		}
 		return $convertedResult;
+	}
+	
+	/**
+	 * Injects the users into the Options objects.
+	 * 
+	 * @param array $users Pool of users to inject from.
+	 * @param mixed $optionsIter Cursor/Iterator of options.
+	 * 
+	 * @return array The options converted from the Cursor with the user injected.
+	 */
+	private function injectUsersIntoOptions($users, $optionsIter) {
+		$options = array();
+			
+		foreach($optionsIter as $option) {
+			
+			$option = \Main\Database\VotingOptionDao::convertVotingOptionsDataDocToVotingOptionsData($option);
+			$optionUserList = array();
+			foreach($option->getUsers() as $optionUserId) {
+				foreach($users as $user) {
+					if($optionUserId == $user->getId()) {
+						array_push($optionUserList, $user);
+					}
+				}
+			}
+			$option->setUsers($optionUserList);
+			array_push($options, $option);
+		}
+		
+		return $options;
 	}
 	
 	/**
