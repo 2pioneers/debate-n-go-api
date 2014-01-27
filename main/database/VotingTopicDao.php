@@ -36,7 +36,7 @@ class VotingTopicDao {
 			//Load options
 			$votingOptionDao = new \Main\Database\VotingOptionDao();
 			$optionsIter = $votingOptionDao->loadOptions($convertedResult->getOptions());
-			$options = injectUsersIntoOptions($users, $optionsIter);
+			$options = $this->injectUsersIntoOptions($users, $optionsIter);
 			
 			$convertedResult->setOptions($options);
 			$convertedResult->setUsers(array());
