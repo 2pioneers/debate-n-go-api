@@ -34,8 +34,8 @@ class VotingTopicDao {
 			//$convertedResult["users"] = $users;
 			
 			//Load options
-			$optionsIter = $this->coreDao->getOptions()->find(array(
-	    		'_id' => array('$in' => $convertedResult->getOptions())));
+			$votingOptionDao = new \Main\Database\VotingOptionDao();
+			$optionsIter = $votingOptionDao->loadOptions($convertedResult->getOptions());
 			$options = array();
 			
 			foreach($optionsIter as $option) {

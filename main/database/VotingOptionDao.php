@@ -18,6 +18,21 @@ class VotingOptionDao {
 	}
 	
 	/**
+	 * Loads all the options from the list of ids.
+	 * 
+	 * @param array $votingOptionsIdList The list o voting options id list.
+	 * @return mixed Iterator of returned Mongo documents.
+	 */
+	public function loadOptions($votingOptionsIdList) {
+		if(empty($votingOptionsIdList)) {
+			return new \EmptyIterator();
+		}
+		
+		return $this->coreDao->getOptions()->find(array(
+	    		'_id' => array('$in' => $votingOptionsIdList)));
+	}
+	
+	/**
 	 * Gets single option by id.
 	 * 
 	 * @param MongoId $optionId The options id.
