@@ -38,6 +38,12 @@ class VotingTopicDao {
 			$optionsIter = $votingOptionDao->loadOptions($convertedResult->getOptions());
 			$options = $this->injectUsersIntoOptions($users, $optionsIter);
 			
+			//Load messages
+			$messageDao = new \Main\Database\MessageDao();
+			$messagesIter = $messageDao->loadMessages($convertedResult->getMessages());
+			//var_dump($messagesIter);
+			$messages = $this->injectUsersIntoMessages($users, $messagesIter);
+			
 			$convertedResult->setOptions($options);
 			$convertedResult->setUsers(array());
 		}
@@ -54,7 +60,7 @@ class VotingTopicDao {
 	 */
 	private function injectUsersIntoOptions($users, $optionsIter) {
 		$options = array();
-			
+		
 		foreach($optionsIter as $option) {
 			
 			$option = \Main\Database\VotingOptionDao::convertVotingOptionsDataDocToVotingOptionsData($option);
@@ -71,6 +77,37 @@ class VotingTopicDao {
 		}
 		
 		return $options;
+	}
+	
+	/**
+	 * Injects the users into the message objects.
+	 * 
+	 * @param array $users Pool of users to inject from.
+	 * @param mixed $messagesIter Cursor/Iterator of messages.
+	 * 
+	 * @return array The messages converted from the Cursor with the user injected.
+	 */
+	private function injectUsersIntoMessages($users, $messagesIter) {
+		$messages = array();
+			
+		foreach($messagesIter as $messageDataDoc) {
+			
+			$messageData = \Main\Database\MessageDao::convertMessageDataDocToMessageData($messageDataDoc);
+			
+			$messageUserId = $messageData->getUsers();
+			foreach($users as $user) {
+				if($messageUserId == $user->getId()) {
+					$messageData->setUser($user);
+					break;
+				}
+			}
+			
+			array_push($messages, $messageData);
+		}
+		
+		//var_dump($messages);
+		
+		return $messages;
 	}
 	
 	/**
@@ -104,7 +141,8 @@ class VotingTopicDao {
 				$votingTopicDataDoc["description"],
 				$votingTopicDataDoc["status"],
 				$votingTopicDataDoc["options"],
-				$votingTopicDataDoc["users"]
+				$votingTopicDataDoc["users"],
+				$votingTopicDataDoc["messages"]
 			);
 		}
 		

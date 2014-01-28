@@ -28,8 +28,10 @@ class MessageDao {
 			return new \EmptyIterator();
 		}
 		
-		return $this->coreDao->getMessages()->find(array(
-	    		'_id' => array('$in' => $messageIds)));
+		return $this->coreDao->getMessages()->find();
+		// return $this->coreDao->getMessages()->find(array(
+	    		// '_id' => array('$in' => $messageIds)));
+		//var_dump($messageIds);
 	}
 	
 	/**
@@ -47,20 +49,19 @@ class MessageDao {
 	 * Converts mongo message document array to MessageData.
 	 * 
 	 * @param array $messageDataDoc The mongoDocument version of the MessageData doc.
-	 * @return null|VotingOptionsData The converted message data.
+	 * @return null|MessageData The converted message data.
 	 */
 	 public static function convertMessageDataDocToMessageData($messageDataDoc) {
 	 	$messageData = null;
 	 	if(!empty($messageDataDoc)) {
 	 		$messageData = new \Main\To\MessageData(
-				$messageData["_id"],
-				$messageData["user"],
-				$messageData["message"],
-				$messageData["postDate"],
-				$messageData["children"]
+				$messageDataDoc["_id"],
+				$messageDataDoc["user"],
+				$messageDataDoc["message"],
+				$messageDataDoc["postDate"],
+				$messageDataDoc["children"]
 			);
 		}
-		
 		return $messageData;
 	 }
 }
