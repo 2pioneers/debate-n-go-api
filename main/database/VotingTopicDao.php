@@ -164,15 +164,6 @@ class VotingTopicDao {
 	 private function addUserVote($optionId, $userId) {
 	 	$this->coreDao->getOptions()->update(array("_id" => $optionId), array('$push' => array("users" => $userId)));
 	 }
-	 
-	 // /**
-	  // * Gets the update voting options.
-	  // * @param VotingTopicData $votinTopicData The current voting topic.
-	  // * @return array The updated list of options.
-	  // */
-	 // private function getVotingTopicOptions($votingTopicData) {
-// 	 	
-	 // }
 }
 
 ?>

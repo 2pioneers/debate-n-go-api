@@ -11,7 +11,7 @@ class VotingOptionDao {
 	private $coreDao;
 	
 	/**
-	 * Constructs the user dao.
+	 * Constructs the Voting options dao.
 	 */
 	public function __construct() {
 		$this->coreDao = CoreDao::getInstance();
@@ -20,7 +20,7 @@ class VotingOptionDao {
 	/**
 	 * Loads all the options from the list of ids.
 	 * 
-	 * @param array $votingOptionsIdList The list o voting options id list.
+	 * @param array $votingOptionsIdList The list of voting options id list.
 	 * @return mixed Iterator of returned Mongo documents.
 	 */
 	public function loadOptions($votingOptionsIdList) {
@@ -39,7 +39,7 @@ class VotingOptionDao {
 	 * @return null|VotingOptionsData The Voting Option information.
 	 */
 	public function getOptionById($optionId) {
-		$result = $this->coreDao->getOptions()->findOne(array("_id" => $uniqueUrl));
+		$result = $this->coreDao->getOptions()->findOne(array("_id" => $optionId));
 		return VotingOptionDao::convertVotingOptionsDataDocToVotingOptionsData($result);
 	}
 	
