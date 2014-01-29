@@ -51,6 +51,7 @@ class VotingTopicData implements \JsonSerializable {
 		$this->status = $status;
 		$this->options = $options;
 		$this->users = $users;
+		$this->messages = $messages;
 	}
 	
 	/**

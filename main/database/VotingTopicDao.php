@@ -44,6 +44,7 @@ class VotingTopicDao {
 			//var_dump($messagesIter);
 			$messages = $this->injectUsersIntoMessages($users, $messagesIter);
 			
+			echo json_encode($messages);
 			$convertedResult->setMessages($messages);
 			
 			$options = $this->injectMessagesIntoOptions($messages, $options);
@@ -118,7 +119,7 @@ class VotingTopicDao {
 			
 			$messageData = \Main\Database\MessageDao::convertMessageDataDocToMessageData($messageDataDoc);
 			
-			$messageUserId = $messageData->getUsers();
+			$messageUserId = $messageData->getUser();
 			foreach($users as $user) {
 				if($messageUserId == $user->getId()) {
 					$messageData->setUser($user);
