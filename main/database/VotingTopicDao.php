@@ -59,7 +59,7 @@ class VotingTopicDao {
 		
 		foreach ($options as $option) {
 			$newMessages = array();
-			foreach ($option->getMessages as $message) {
+			foreach ($option->getMessages() as $message) {
 				foreach($messages as $fullMessage) {
 					if($message == $fullMessage->getId()) {
 						array_push($newMessages, $fullMessage);
