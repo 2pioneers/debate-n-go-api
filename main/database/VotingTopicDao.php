@@ -102,6 +102,19 @@ class VotingTopicDao {
 				}
 			}
 			
+			//Convert user to data
+			$updatedChildren = array();
+			foreach ($messageData->getChildren() as $child) {
+				foreach($users as $user) {
+					if($messageUserId == $user->getId()) {
+						$child["user"] = $user;
+						array_push($updatedChildren, $child);
+						break;
+					}
+				}
+			}
+			
+			$messageData->setChildren($updatedChildren);
 			array_push($messages, $messageData);
 		}
 		
