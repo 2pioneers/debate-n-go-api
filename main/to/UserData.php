@@ -3,7 +3,7 @@
 /**
  * Simple user data object.
  */
-class UserData {
+class UserData implements \JsonSerializable {
 	
 	/**
 	 * The id of the user.
@@ -44,6 +44,21 @@ class UserData {
 		$this->streetAddress = $streetAddress;
 		$this->uniqueUrlExtension = $uniqueUrlExtension;
 		$this->email = $email;
+	}
+	
+	/**
+	 * Encodes the TO so that it can be serialized and passed over json.
+	 * 
+	 * @return array array representation of the data object.
+	 */
+	public function jsonSerialize() {
+		return array(
+			'id' => $this->getId()->__toString(),
+			'nickname' => $this->getNickname(),
+			'streetAddress' => $this->getStreetAddress(),
+			'uniqueUrlExtension' => $this->getUniqueUrlExtension(),
+			'email' => $this->getEmail()
+		);
 	}
 	
 	/**

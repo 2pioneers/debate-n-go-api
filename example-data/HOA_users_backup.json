@@ -1,0 +1,2 @@
+{ "_id" : { "$oid" : "000000000000000000000001" }, "email" : "me@temp.org", "nickname" : "98 rogers ave.", "street address" : "98 rogers ave. Bloomington, IL 61701", "unique_url_extension" : "pqr91g" }
+{ "_id" : { "$oid" : "000000000000000000000002" }, "nickname" : "97 rogers ave.", "street address" : "97 rogers ave. Bloomington, IL 61701", "unique_url_extension" : "pqr91h", "email" : "me@temp2.org" }

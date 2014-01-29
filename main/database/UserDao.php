@@ -21,7 +21,7 @@ class UserDao {
 	 * Loads the users based on the list of id's.
 	 * 
 	 * @param array $userIdList simple list of user ids.
-	 * @return array List of users that can be iterated through using
+	 * @return Iterator List of users that can be iterated through using
 	 */
 	public function loadUsers($userIdList) {
 		if(empty($userIdList)) {
@@ -40,7 +40,7 @@ class UserDao {
 	 */
 	public function searchUserByUrlExtension($uniqueUrl) {
 		$result = $this->coreDao->getUsers()->findOne(array("unique_url_extension" => $uniqueUrl));
-		return $this->convertUserDataDocToUserData($result);
+		return UserDao::convertUserDataDocToUserData($result);
 	}
 	
 	/**
@@ -49,7 +49,7 @@ class UserDao {
 	 * @param array $userDataDoc The mongoDocument version of the userdata doc.
 	 * @return null|UserData The converted user object.
 	 */
-	 private function convertUserDataDocToUserData($userDataDoc) {
+	 public static function convertUserDataDocToUserData($userDataDoc) {
 	 	$userData = null;
 	 	if(!empty($userDataDoc)) {
 	 		$userData = new \Main\To\UserData(
@@ -95,11 +95,19 @@ class UserDao {
 	 * 
 	 * @param UserData $userData The user's data object.
 	 * @param string $newNickname The new nickname to be given to the user.
+	 * 
+	 * @return bool returns false if there was an issue inserting into the database.
 	 */
 	 public function updateUsersNickname($userData, $newNickname) {
-	 	
-	 	$this->coreDao->getUsers()->update(array("_id" => $userData->getId()), 
-	 		array('$set' => array("nickname" => $newNickname)));
+	 	try {
+		 	$this->coreDao->getUsers()->update(array("_id" => $userData->getId()), 
+		 		array('$set' => array("nickname" => $newNickname)));
+		}
+		catch(MongoException $er) {
+			//TODO: Do some error logging here.
+			return false;
+		}
+		return true;
 	 }
 	 
 	 /**

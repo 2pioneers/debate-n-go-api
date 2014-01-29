@@ -9,7 +9,9 @@
         "psr-4": {
         	"Main\\Database\\": "main/database/",
         	"Main\\To\\": "main/to/",
-        	"Test\\Database\\": "test/database/"
+        	"Main\\Controller\\": "main/controller", 
+        	"Test\\Database\\": "test/database/",
+        	"Test\\Controller\\": "test/controller"
         }
     }
 }

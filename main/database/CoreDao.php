@@ -26,6 +26,11 @@ class CoreDao {
 	private $messages;
 	
 	/**
+	 * The Voting topic options.
+	 */
+	private $options;
+	
+	/**
 	 * Closed off the constructor from use.
 	 */
 	private function __construct() {
@@ -59,6 +64,7 @@ class CoreDao {
 		$this->voting_topics = $db->voting_topics;
 		$this->users = $db->users;
 		$this->messages = $db->messages;
+		$this->options = $db->options;
 	}
 	
 	/**
@@ -86,6 +92,15 @@ class CoreDao {
 	 */
 	public function getMessages() {
 		return $this->messages;
+	}
+	
+	/**
+	 * Gets the voting topic options.
+	 * 
+	 * @return mixed options collection object.
+	 */
+	public function getOptions() {
+		return $this->options;
 	}
 }
 

@@ -11,7 +11,7 @@ class UserDaoTest extends \PHPUnit_Framework_TestCase {
 	private $userDao;
 	
 	/**
-	 * Stores the created user id to pass
+	 * Stores the created user id to pass.
 	 */
 	private $storedCreatedUserId;
 	

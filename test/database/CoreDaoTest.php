@@ -23,6 +23,7 @@ class CoreDaoTest extends \PHPUnit_Framework_TestCase {
 		$this->assertNotEmpty($coreDao->getVoting_topics());
 		$this->assertNotEmpty($coreDao->getUsers());
 		$this->assertNotEmpty($coreDao->getMessages());
+		$this->assertNotEmpty($coreDao->getOptions());
 	} 
 }
 
