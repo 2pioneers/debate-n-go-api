@@ -31,6 +31,11 @@ class VotingTopicData implements \JsonSerializable {
 	private $users;
 	
 	/**
+	 * The list of message id's associated with the topic.
+	 */
+	private $messages;
+	
+	/**
 	 * Constructs the object with data.
 	 * 
 	 * @param MongoId $id The voting topic id.
@@ -38,13 +43,15 @@ class VotingTopicData implements \JsonSerializable {
 	 * @param string $status The status of the object.
 	 * @param array $options The options allowed for the user to choose.
 	 * @param array $users The users that are associated with the voting topic.
+	 * @param array $messages The list of message id's associated with the topic.
 	 */
-	public function __construct($id, $description, $status, $options, $users) {
+	public function __construct($id, $description, $status, $options, $users, $messages) {
 		$this->id = $id;
 		$this->description = $description;
 		$this->status = $status;
 		$this->options = $options;
 		$this->users = $users;
+		$this->messages = $messages;
 	}
 	
 	/**
@@ -58,7 +65,8 @@ class VotingTopicData implements \JsonSerializable {
 			'description' => $this->getDescription(),
 			'status' => $this->getStatus(),
 			'options' => $this->getOptions(),
-			'users' => $this->getUsers()
+			'users' => $this->getUsers(),
+			'messages' => $this->getMessages()
 		);
 	}
 	
@@ -140,6 +148,24 @@ class VotingTopicData implements \JsonSerializable {
 	 */
 	public function setUsers($users) {
 		$this->users = $users;
+	}
+	
+	/**
+	 * Gets the messages ids.
+	 * 
+	 * @return array The message ids.
+	 */
+	public function getMessages() {
+		return $this->messages;
+	}
+	
+	/**
+	 * Sets the message ids.
+	 * 
+	 * @param array $messages The message ids to set.
+	 */
+	public function setMessages($messages) {
+		$this->messages = $messages;
 	}
 }
 

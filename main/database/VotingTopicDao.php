@@ -38,10 +38,40 @@ class VotingTopicDao {
 			$optionsIter = $votingOptionDao->loadOptions($convertedResult->getOptions());
 			$options = $this->injectUsersIntoOptions($users, $optionsIter);
 			
+			//Load messages
+			$messageDao = new \Main\Database\MessageDao();
+			$messagesIter = $messageDao->loadMessages($convertedResult->getMessages());
+			//var_dump($messagesIter);
+			$messages = $this->injectUsersIntoMessages($users, $messagesIter);
+			
+			$convertedResult->setMessages($messages);
+			
+			$options = $this->injectMessagesIntoOptions($messages, $options);
+			
 			$convertedResult->setOptions($options);
 			$convertedResult->setUsers(array());
 		}
 		return $convertedResult;
+	}
+	
+	private function injectMessagesIntoOptions($messages, $options) {
+		$newOptions = array();
+		
+		foreach ($options as $option) {
+			$newMessages = array();
+			foreach ($option->getMessages() as $message) {
+				foreach($messages as $fullMessage) {
+					if($message == $fullMessage->getId()) {
+						array_push($newMessages, $fullMessage);
+						break;
+					}
+				}
+			}
+			$option->setMessages($newMessages);
+			array_push($newOptions, $option);
+		}
+		
+		return $newOptions;
 	}
 	
 	/**
@@ -54,7 +84,7 @@ class VotingTopicDao {
 	 */
 	private function injectUsersIntoOptions($users, $optionsIter) {
 		$options = array();
-			
+		
 		foreach($optionsIter as $option) {
 			
 			$option = \Main\Database\VotingOptionDao::convertVotingOptionsDataDocToVotingOptionsData($option);
@@ -71,6 +101,50 @@ class VotingTopicDao {
 		}
 		
 		return $options;
+	}
+	
+	/**
+	 * Injects the users into the message objects.
+	 * 
+	 * @param array $users Pool of users to inject from.
+	 * @param mixed $messagesIter Cursor/Iterator of messages.
+	 * 
+	 * @return array The messages converted from the Cursor with the user injected.
+	 */
+	private function injectUsersIntoMessages($users, $messagesIter) {
+		$messages = array();
+			
+		foreach($messagesIter as $messageDataDoc) {
+			
+			$messageData = \Main\Database\MessageDao::convertMessageDataDocToMessageData($messageDataDoc);
+			
+			$messageUserId = $messageData->getUser();
+			foreach($users as $user) {
+				if($messageUserId == $user->getId()) {
+					$messageData->setUser($user);
+					break;
+				}
+			}
+			
+			//Convert user to data
+			$updatedChildren = array();
+			foreach ($messageData->getChildren() as $child) {
+				foreach($users as $user) {
+					if($messageUserId == $user->getId()) {
+						$child["user"] = $user;
+						array_push($updatedChildren, $child);
+						break;
+					}
+				}
+			}
+			
+			$messageData->setChildren($updatedChildren);
+			array_push($messages, $messageData);
+		}
+		
+		//var_dump($messages);
+		
+		return $messages;
 	}
 	
 	/**
@@ -104,31 +178,12 @@ class VotingTopicDao {
 				$votingTopicDataDoc["description"],
 				$votingTopicDataDoc["status"],
 				$votingTopicDataDoc["options"],
-				$votingTopicDataDoc["users"]
+				$votingTopicDataDoc["users"],
+				$votingTopicDataDoc["messages"]
 			);
 		}
 		
 		return $votingTopicData;
-	 }
-	 
-	 /**
-	 * Converts mongo options document array to VotingOptionsData.
-	 * 
-	 * @param array $votingOptionsDataDoc The mongoDocument version of the VotingTopicData doc.
-	 * @return null|VotingOptionsData The converted Voting options object.
-	 */
-	 private function convertVotingOptionsDataDocToVotingOptionsData($votingOptionsDataDoc) {
-	 	$votingOptionsData = null;
-	 	if(!empty($votingOptionsDataDoc)) {
-	 		$votingOptionsData = new \Main\To\VotingOptionsData(
-				$votingOptionsDataDoc["_id"],
-				$votingOptionsDataDoc["description"],
-				$votingOptionsDataDoc["users"],
-				$votingOptionsDataDoc["messages"]
-			);
-		}
-		
-		return $votingOptionsData;
 	 }
 	 
 	 /**
@@ -164,15 +219,6 @@ class VotingTopicDao {
 	 private function addUserVote($optionId, $userId) {
 	 	$this->coreDao->getOptions()->update(array("_id" => $optionId), array('$push' => array("users" => $userId)));
 	 }
-	 
-	 // /**
-	  // * Gets the update voting options.
-	  // * @param VotingTopicData $votinTopicData The current voting topic.
-	  // * @return array The updated list of options.
-	  // */
-	 // private function getVotingTopicOptions($votingTopicData) {
-// 	 	
-	 // }
 }
 
 ?>

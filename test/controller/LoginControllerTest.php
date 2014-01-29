@@ -29,7 +29,7 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 		$dataSet = array();
 		
 		$successExpected = new \Main\To\UserData(new \MongoId("000000000000000000000001"), "69 East", "69 Eastbound Down Road Atlanta, GA 22222", "PQW2d", "random@user.na");
-		$successVotingTopicExpected = new \Main\To\VotingTopicData(new \MongoId("000000000000000000000001"), "", "", array(), array());
+		$successVotingTopicExpected = new \Main\To\VotingTopicData(new \MongoId("000000000000000000000001"), "", "", array(), array(),array());
 		
 		//Fully successful
 		$successUserMock = $this->getMock('Main\Database\UserDao', array('searchUserByUrlExtension', 'loadUsers'));
@@ -54,8 +54,8 @@ class LoginControllerTest extends \PHPUnit_Framework_TestCase {
 		$successSet = array(json_encode(
 						array('status' => 'ok', 
 							'userData' => $successExpected,
-							'votingTopic' => $successVotingTopicExpected,
-							'users' => array())), $successController);
+							'votingTopic' => $successVotingTopicExpected)),
+							$successController);
 		
 		//Fails because of url
 		$fakeurl = "fakeurl";
