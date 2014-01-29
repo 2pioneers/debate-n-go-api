@@ -44,10 +44,34 @@ class VotingTopicDao {
 			//var_dump($messagesIter);
 			$messages = $this->injectUsersIntoMessages($users, $messagesIter);
 			
+			$convertedResult->setMessages($messages);
+			
+			$options = $this->injectMessagesIntoOptions($messages, $options);
+			
 			$convertedResult->setOptions($options);
 			$convertedResult->setUsers(array());
 		}
 		return $convertedResult;
+	}
+	
+	private function injectMessagesIntoOptions($messages, $options) {
+		$newOptions = array();
+		
+		foreach ($options as $option) {
+			$newMessages = array();
+			foreach ($option->getMessages as $message) {
+				foreach($messages as $fullMessage) {
+					if($message == $fullMessage->getId()) {
+						array_push($newMessages, $fullMessage);
+						break;
+					}
+				}
+			}
+			$option->setMessages($newMessages);
+			array_push($newOptions, $option);
+		}
+		
+		return $newOptions;
 	}
 	
 	/**
@@ -160,26 +184,6 @@ class VotingTopicDao {
 		}
 		
 		return $votingTopicData;
-	 }
-	 
-	 /**
-	 * Converts mongo options document array to VotingOptionsData.
-	 * 
-	 * @param array $votingOptionsDataDoc The mongoDocument version of the VotingTopicData doc.
-	 * @return null|VotingOptionsData The converted Voting options object.
-	 */
-	 private function convertVotingOptionsDataDocToVotingOptionsData($votingOptionsDataDoc) {
-	 	$votingOptionsData = null;
-	 	if(!empty($votingOptionsDataDoc)) {
-	 		$votingOptionsData = new \Main\To\VotingOptionsData(
-				$votingOptionsDataDoc["_id"],
-				$votingOptionsDataDoc["description"],
-				$votingOptionsDataDoc["users"],
-				$votingOptionsDataDoc["messages"]
-			);
-		}
-		
-		return $votingOptionsData;
 	 }
 	 
 	 /**
