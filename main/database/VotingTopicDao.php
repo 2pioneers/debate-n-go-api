@@ -44,7 +44,6 @@ class VotingTopicDao {
 			//var_dump($messagesIter);
 			$messages = $this->injectUsersIntoMessages($users, $messagesIter);
 			
-			echo json_encode($messages);
 			$convertedResult->setMessages($messages);
 			
 			$options = $this->injectMessagesIntoOptions($messages, $options);

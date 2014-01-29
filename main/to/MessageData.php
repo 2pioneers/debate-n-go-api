@@ -3,7 +3,7 @@
 /**
  * Message data TO
  */
-class MessageData {
+class MessageData implements \JsonSerializable {
 	
 	/**
 	 * The id of the message.
@@ -45,6 +45,16 @@ class MessageData {
 		$this->message = $message;
 		$this->postDate = $postDate;
 		$this->children = $children;
+	}
+	
+	public function jsonSerialize() {
+		return array(
+			'id' => $this->getId()->__toString(),
+			'user' => $this->getUser(),
+			'message' => $this->getMessage(),
+			'postDate' => $this->getPostDate(),
+			'children' => $this->getChildren()
+		);
 	}
 	
 	/**
