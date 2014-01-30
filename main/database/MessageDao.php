@@ -28,10 +28,29 @@ class MessageDao {
 			return new \EmptyIterator();
 		}
 		
-		return $this->coreDao->getMessages()->find();
-		// return $this->coreDao->getMessages()->find(array(
-	    		// '_id' => array('$in' => $messageIds)));
+		//return $this->coreDao->getMessages()->find();
+		return $this->coreDao->getMessages()->find(array(
+	    		'_id' => array('$in' => $messageIds)));
 		//var_dump($messageIds);
+	}
+	
+	/**
+	 * Loads the messages and converts them to local objects.
+	 * 
+	 * @param array $messageIds The list of messages.
+	 * @return array List of messages.
+	 */
+	public function loadAndConvertMessages($messageIds) {
+		$result = $this->loadMessages($messageIds);
+		$messages = array();
+		
+		foreach($result as $message) {
+			
+			$message = \Main\Database\MessageDao::convertMessageDataDocToMessageData($message);
+			array_push($messages, $message);
+		}
+		
+		return $messages;
 	}
 	
 	/**

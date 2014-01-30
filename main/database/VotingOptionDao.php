@@ -33,6 +33,23 @@ class VotingOptionDao {
 	}
 	
 	/**
+	 * Wrapper around loadOptions to parse out the list]
+	 * 
+	 * @param array $votingOptionsIdList The list of voting options id list.
+	 * @return array array of returned options.
+	 */
+	public function loadAndConvertOptions($votingOptionsIdList) {
+		$results = $this->loadOptions($votingOptionsIdList);
+		$options = array();
+		foreach($results as $option) {
+			$option = \Main\Database\VotingOptionDao::convertVotingOptionsDataDocToVotingOptionsData($option);
+			array_push($options, $option);
+		}
+		
+		return $options;
+	}
+	
+	/**
 	 * Gets single option by id.
 	 * 
 	 * @param MongoId $optionId The options id.
