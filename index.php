@@ -40,10 +40,26 @@ $app->post('/updateUsername/', function() use($app) {
 
 $app->post('/userVote', function() use($app) {
 	$body = $app->request()->getBody();
-	//Should be getting {"user_id": "asjhfjasglakhjsdlghasgkjas", "option_id": "asjlghasfklghflgkjfgkls", "vote_options": ["id1, id2, id3"]}
+	$body = json_decode($body);
+	$response = null;
+	if(property_exists($body,'user_id') && property_exists($body,'option_id') && property_exists($body,'vote_options')) {
+		$userId = new \MongoId($body->user_id);
+		$optionId = new \MongoId($body->option_id);
+		$optionIds = array();
+		foreach($body->vote_options as $option) {
+			array_push($optionIds, new \MongoId($option));
+		}
+		
+		$votingTopicData = new \Main\Database\VotingTopicDao();
+		$votingTopicData->updateUserVote($optionId, $userData);
+		$votingOptionDao = new \Main\Database\VotingOptionDao();
+		$response = $votingOptionDao->loadAndConvertOptions($votingOptionsIdList);
+	}
+	else {
+		$response = json_encode(array('status' => '400', 'message' => "Missing input data."));
+	}
 	$app->response()->header("Content-Type", "application/json");
-	echo(json_encode(array("status" => "ok")));
-	//Will be returning all the votes.
+	echo(json_encode($response));
 });
 
 $app->post('/leaveComment', function() use($app) {
