@@ -28,10 +28,29 @@ class MessageDao {
 			return new \EmptyIterator();
 		}
 		
-		return $this->coreDao->getMessages()->find();
-		// return $this->coreDao->getMessages()->find(array(
-	    		// '_id' => array('$in' => $messageIds)));
+		//return $this->coreDao->getMessages()->find();
+		return $this->coreDao->getMessages()->find(array(
+	    		'_id' => array('$in' => $messageIds)));
 		//var_dump($messageIds);
+	}
+	
+	/**
+	 * Loads the messages and converts them to local objects.
+	 * 
+	 * @param array $messageIds The list of messages.
+	 * @return array List of messages.
+	 */
+	public function loadAndConvertMessages($messageIds) {
+		$result = $this->loadMessages($messageIds);
+		$messages = array();
+		
+		foreach($result as $message) {
+			
+			$message = \Main\Database\MessageDao::convertMessageDataDocToMessageData($message);
+			array_push($messages, $message);
+		}
+		
+		return $messages;
 	}
 	
 	/**
@@ -63,6 +82,50 @@ class MessageDao {
 			);
 		}
 		return $messageData;
+	 }
+	 
+	 /**
+	  * Stores a new message in the database.
+	  * 
+	  * @param MongoId $userId The new user id.
+	  * @param string $message The message to set.
+	  * @return MongoId The new objects mongo id.
+	  */
+	 public function storeMessage($userId, $message) {
+	 	$newId = new \MongoId();
+	 	$this->coreDao->getMessages()->insert(
+	 		array("_id" => $newId, 
+				"user" => $userId, 
+				"message" => $message, 
+				"postDate" => new \MongoDate(), 
+				"children" => array()
+			)
+		);
+		return $newId;
+	 }
+	 
+	 /**
+	  * Stores a new child message.
+	  * 
+	  * @param MongoId $userId The new user id.
+	  * @param MongoId $parentId the parent id to set.
+	  * @param string $message The message to set.
+	  */
+	 public function storeChildMessage($userId, $parentId, $message) {
+	 	$userDao = new \Main\Database\UserDao();
+		$userResult = $userDao->lookupSingleUserById($userId);
+	 	if(!is_null($userResult)) {
+	 		$this->coreDao->getMessages()->update(array("_id" => $parentId), 
+	 			array(
+	 				'$push' => array("children" => array(
+			 				"users" => $userId,
+			 				"response" => $message,
+			 				"postDate" => new \MongoDate()
+						)
+					)
+				)
+			);
+		}
 	 }
 }
 

@@ -23,8 +23,8 @@ class UserInformationController {
 	 * @param string $newUsername The new alias to update.
 	 * @return string JSON string with the status of the update.
 	 */
-	public function updateUsername($newUsername) {
-		if($this->checkSession()) {
+	public function updateUsername($userId, $newUsername) {
+		if($this->checkSession($userId)) {
 			if($this->userDao->updateUsersNickname($_SESSION['userData'], $newUsername)) {
 				return(json_encode(array('status' => 'ok')));
 			}
@@ -33,17 +33,18 @@ class UserInformationController {
 			}
 		}
 		else {
-			return(json_encode(array('status' => '404', 'message' => "User not in session. Please log in with unique url.")));
+			return(json_encode(array('status' => '403', 'message' => "User not in session. Please log in with unique url.")));
 		}
 	}
 	
 	/**
 	 * Checks the session data and verifies the user is the one in the system.
 	 * 
+	 * @param UserId $userId The supplied id to verify is in session.
 	 * @return bool true if the user data is in the session.
 	 */
-	private function checkSession() {
-		if(isset($_SESSION['userData'])) {
+	private function checkSession($userId) {
+		if(isset($_SESSION['userData']) && $userId == $_SESSION['userData']->getId()) {
 			return true;
 		}
 		return false;

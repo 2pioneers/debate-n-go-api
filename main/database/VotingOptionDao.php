@@ -33,6 +33,23 @@ class VotingOptionDao {
 	}
 	
 	/**
+	 * Wrapper around loadOptions to parse out the list]
+	 * 
+	 * @param array $votingOptionsIdList The list of voting options id list.
+	 * @return array array of returned options.
+	 */
+	public function loadAndConvertOptions($votingOptionsIdList) {
+		$results = $this->loadOptions($votingOptionsIdList);
+		$options = array();
+		foreach($results as $option) {
+			$option = \Main\Database\VotingOptionDao::convertVotingOptionsDataDocToVotingOptionsData($option);
+			array_push($options, $option);
+		}
+		
+		return $options;
+	}
+	
+	/**
 	 * Gets single option by id.
 	 * 
 	 * @param MongoId $optionId The options id.
@@ -61,6 +78,22 @@ class VotingOptionDao {
 		}
 		
 		return $votingOptionsData;
+	 }
+	 
+	 /**
+	  * Stores the message in the options.
+	  */
+	 public function storeMessageInOptions($messageId, $optionIds) {
+	 	$optionsCollection = $this->coreDao->getOptions();
+		foreach ($optionIds as $optionId) {
+		 	$optionsCollection->update(array("_id" => $optionId), 
+	 			array(
+	 				'$push' => array(
+		 				"messages" => $messageId
+					)
+				)
+			);
+		}
 	 }
 }
 

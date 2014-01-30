@@ -33,6 +33,25 @@ class UserDao {
 	}
 	
 	/**
+	 * Loads the users based on the list of id's. Converts them to a list.
+	 * 
+	 * @param array $userIdList simple list of user ids.
+	 * @return array List of users.
+	 */
+	public function loadAndConvertUsers($userIdList) {
+		$result = $this->loadUsers($userIdList);
+		$users = array();
+		
+		foreach($result as $user) {
+			$user = UserDao::convertUserDataDocToUserData($user);
+			$user->setUniqueUrlExtension(null);
+			array_push($users, $user);
+		}
+		
+		return $users;
+	}
+	
+	/**
 	 * Obtains a user by searching for the unique url given to the user.
 	 * 
 	 * @param string $uniqueUrl The unique url sent to the user.
