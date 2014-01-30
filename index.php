@@ -49,7 +49,7 @@ $app->post('/userVote', function() use($app) {
 
 $app->post('/leaveComment', function() use($app) {
 	$body = $app->request()->getBody();
-	//Should be getting {"user_id": "shlashgaklj", "message":"hi ho diddly", "vote_options": ["id1, id2, id3"]}
+	//Should be getting {"user_id": "shlashgaklj", "message":"hi ho diddly", "vote_options": ["id1, id2, id3"], "vote_topic_id": "iddddd"}
 	$app->response()->header("Content-Type", "application/json");
 	echo("");
 });
