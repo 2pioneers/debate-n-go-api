@@ -34,7 +34,7 @@ class VotingTopicDao {
 			
 			//Load options
 			$votingOptionDao = new \Main\Database\VotingOptionDao();
-			$optionsIter = $votingOptionDao->loadAndConvertOptions($convertedResult->getOptions());
+			$options = $votingOptionDao->loadAndConvertOptions($convertedResult->getOptions());
 			$convertedResult->setOptions($options);
 			
 			//Load messages
