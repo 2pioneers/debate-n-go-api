@@ -51,7 +51,7 @@ $app->post('/userVote', function() use($app) {
 		}
 		
 		$votingTopicData = new \Main\Database\VotingTopicDao();
-		$votingTopicData->updateUserVote($optionId, $userData);
+		$votingTopicData->updateUserVote($optionId, $userId);
 		$votingOptionDao = new \Main\Database\VotingOptionDao();
 		$response = $votingOptionDao->loadAndConvertOptions($votingOptionsIdList);
 	}
