@@ -49,9 +49,12 @@ $app->post('/userVote', function() use($app) {
 
 $app->post('/leaveComment', function() use($app) {
 	$body = $app->request()->getBody();
+	$body = json_decode($body);
 	//Should be getting {"user_id": "shlashgaklj", "message":"hi ho diddly", "vote_options": ["id1, id2, id3"], "vote_topic_id": "iddddd"}
+	$messageController = new \Main\Controller\MessageController();
+	$response = $messageController->leaveMessage($body);
 	$app->response()->header("Content-Type", "application/json");
-	echo("");
+	echo(json_encode($response));
 });
 
 $app->post('/leaveReply', function() use($app) {
