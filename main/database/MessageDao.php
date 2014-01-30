@@ -117,10 +117,11 @@ class MessageDao {
 	 	if(!is_null($userResult)) {
 	 		$this->coreDao->getMessages()->update(array("_id" => $parentId), 
 	 			array(
-	 				'$push' => array(
-		 				"users" => $userId,
-		 				"response" => $message,
-		 				"postDate" => new \MongoDate()
+	 				'$push' => array("children" => array(
+			 				"users" => $userId,
+			 				"response" => $message,
+			 				"postDate" => new \MongoDate()
+						)
 					)
 				)
 			);
