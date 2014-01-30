@@ -1,6 +1,6 @@
 <?php
-// ini_set("log_errors", 1);
-// ini_set("error_log", "/tmp/php-error.log");
+ini_set("log_errors", 1);
+ini_set("error_log", "/tmp/php-error.log");
 
 require 'vendor/autoload.php';
 
@@ -24,9 +24,9 @@ $app->post('/updateUsername/', function() use($app) {
 	$body = $app->request()->getBody();
 	$body = json_decode($body);
 	$response = null;
-	if(isset($body['user_id']) && isset($body['new_username'])) {
-		$userId = new \MongoId($body['user_id']);
-		$newUsername = $body['new_username'];
+	if(property_exists($body,'user_id') && property_exists($body,'new_username')) {
+		$userId = new \MongoId($body->user_id);
+		$newUsername = $body->new_username;
 		
 		$userInformationController = new Main\Controller\UserInformationController();
 		$response = $userInformationController->updateUsername($userId, $newUsername);
