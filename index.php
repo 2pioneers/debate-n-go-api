@@ -41,23 +41,8 @@ $app->post('/updateUsername/', function() use($app) {
 $app->post('/userVote', function() use($app) {
 	$body = $app->request()->getBody();
 	$body = json_decode($body);
-	$response = null;
-	if(property_exists($body,'user_id') && property_exists($body,'option_id') && property_exists($body,'vote_options')) {
-		$userId = new \MongoId($body->user_id);
-		$optionId = new \MongoId($body->option_id);
-		$optionIds = array();
-		foreach($body->vote_options as $option) {
-			array_push($optionIds, new \MongoId($option));
-		}
-		
-		$votingTopicData = new \Main\Database\VotingTopicDao();
-		$votingTopicData->updateUserVote($optionId, $userId);
-		$votingOptionDao = new \Main\Database\VotingOptionDao();
-		$response = $votingOptionDao->loadAndConvertOptions($optionIds);
-	}
-	else {
-		$response = json_encode(array('status' => '400', 'message' => "Missing input data."));
-	}
+	$votingController = new \Main\Controller\VotingController();
+	$response = $votingController->placeVote($body);
 	$app->response()->header("Content-Type", "application/json");
 	echo(json_encode($response));
 });
