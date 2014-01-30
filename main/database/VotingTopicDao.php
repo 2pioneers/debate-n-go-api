@@ -29,7 +29,7 @@ class VotingTopicDao {
 		if(!is_null($convertedResult)) {
 			//Load base users
 			$userDao = new \Main\Database\UserDao();
-			$usersIter = $userDao->loadAndConvertUsers($convertedResult->getUsers());
+			$users = $userDao->loadAndConvertUsers($convertedResult->getUsers());
 			$convertedResult->setUsers($users);
 			
 			//Load options
