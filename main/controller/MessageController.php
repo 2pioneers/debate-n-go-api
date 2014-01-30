@@ -29,8 +29,8 @@ class MessageController {
 				$messageDao = new \Main\Database\MessageDao();
 				$messageId = $messageDao->storeMessage($userId, $body->message);
 				
-				$voteTopicId = new \Main\Database\VotingTopicDao();
-				$voteTopicId->storeNewMessage($voteTopicId, $messageId);
+				$voteTopicDao = new \Main\Database\VotingTopicDao();
+				$voteTopicDao->storeNewMessage($voteTopicId, $messageId);
 				
 				$votingOptionDao = new \Main\Database\VotingOptionDao();
 				$votingOptionDao->storeMessageInOptions($messageId, $optionIds);
