@@ -102,6 +102,20 @@ class VotingTopicDao {
 	 		$this->coreDao->getOptions()->update(array("_id" => $optionId), array('$push' => array("users" => $userId)));
 		}
 	 }
+	 
+	 /**
+	  * Stores a message in the voting topic dao.
+	  */
+	 public function storeNewMessage($topicId, $messageId) {
+	 	$optionsCollection = $this->coreDao->getVoting_topics();
+	 	$optionsCollection->update(array("_id" => $topicId), 
+ 			array(
+ 				'$push' => array(
+	 				"messages" => $messageId
+				)
+			)
+		);
+	}
 }
 
 ?>

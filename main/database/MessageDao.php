@@ -89,16 +89,19 @@ class MessageDao {
 	  * 
 	  * @param MongoId $userId The new user id.
 	  * @param string $message The message to set.
+	  * @return MongoId The new objects mongo id.
 	  */
 	 public function storeMessage($userId, $message) {
+	 	$newId = new \MongoId();
 	 	$this->coreDao->getMessages()->insert(
-	 		array("_id" => new \MongoId(), 
+	 		array("_id" => $newId, 
 				"user" => $userId, 
 				"message" => $message, 
 				"postDate" => new \MongoDate(), 
 				"children" => array()
 			)
 		);
+		return $newId;
 	 }
 	 
 	 /**
@@ -112,7 +115,7 @@ class MessageDao {
 	 	$userDao = new \Main\Database\UserDao();
 		$userResult = $userDao->lookupSingleUserById($userId);
 	 	if(!is_null($userResult)) {
-	 		$this->coreDao->getOptions()->update(array("_id" => $parentId), 
+	 		$this->coreDao->getMessages()->update(array("_id" => $parentId), 
 	 			array(
 	 				'$push' => array(
 		 				"users" => $userId,
