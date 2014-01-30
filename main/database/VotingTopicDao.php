@@ -70,15 +70,13 @@ class VotingTopicDao {
 	 /**
 	  * Changes a user's vote in the system.
 	  * 
-	  * @param VotingTopicData $votinTopicData The current voting topic.
+	  * @param MongoId $optionId The current voting topic.
 	  * @param UserData $userData The user's information.
 	  * @param string $newVote The new option to switch the user to.
-	  * @return array The updated list of options.
 	  */
-	 public function updateUserVote($votingTopicData, $userData, $newVote) {
-	 	$this->removeUserVote($votingTopicData, $userData);
-		$this->addUserVote($votingTopicData, $userData, $newVote);
-		$this->getVotingTopicOptions($votingTopicData);
+	 public function updateUserVote($optionId, $userData) {
+	 	$this->removeUserVote($userData);
+		$this->addUserVote($optionId, $userData);
 	 }
 	 
 	 /**
@@ -87,7 +85,7 @@ class VotingTopicDao {
 	  * @param MongoId $userId The user's id number.
 	  * @return bool false if there was a database issue.
 	  */
-	 private function removeUserVote($votingTopicData, $userId) {
+	 private function removeUserVote($userId) {
 	 	$this->coreDao->getOptions()->update(array("users" => $userId), array('$pull' => array("users" => $userId)));
 	 }
 	 
@@ -98,7 +96,11 @@ class VotingTopicDao {
 	  * @return bool false if there was a database issue.
 	  */
 	 private function addUserVote($optionId, $userId) {
-	 	$this->coreDao->getOptions()->update(array("_id" => $optionId), array('$push' => array("users" => $userId)));
+	 	$userDao = new \Main\Database\UserDao();
+		$userResult = $userDao->lookupSingleUserById($userId);
+	 	if(!is_null($userResult)) {
+	 		$this->coreDao->getOptions()->update(array("_id" => $optionId), array('$push' => array("users" => $userId)));
+		}
 	 }
 }
 
