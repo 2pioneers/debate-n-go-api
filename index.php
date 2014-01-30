@@ -59,9 +59,11 @@ $app->post('/leaveComment', function() use($app) {
 
 $app->post('/leaveReply', function() use($app) {
 	$body = $app->request()->getBody();
-	//Should be getting {"user_id": "shlashgaklj", "message":"hi ho diddly", "parent_id": "jskjhalshjg"}
+	$body = json_decode($body);
+	$messageController = new \Main\Controller\MessageController();
+	$response = $messageController->leaveResponse($body);
 	$app->response()->header("Content-Type", "application/json");
-	echo("");
+	echo(json_encode($response));
 });
 
 $app->run();

@@ -47,7 +47,35 @@ class MessageController {
 		return $response;
 		
 	 }
-	 
+
+	 /**
+	  * Creates a new message response.
+	  */
+	 public function leaveResponse($body) {
+		$response = null;
+		if(property_exists($body,'user_id') && 
+			property_exists($body,'message') && 
+			property_exists($body,'parent_id')) {
+			$userId = new \MongoId($body->user_id);
+			if($this->checkSession($userId)) {
+				$parentId = new \MongoId($body->parent_id);
+				
+				$messageDao = new \Main\Database\MessageDao();
+				$messageDao->storeChildMessage($userId, $parentId, $body->message);
+				
+				$response = array('status' => 'ok');
+			}
+			else {
+				$response = array('status' => '403', 'message' => "Forbidden");
+			}
+		}
+		else {
+			$response = array('status' => '400', 'message' => "Missing input data.");
+		}
+		return $response;
+		
+	 }
+
 	 /**
 	 * Checks the session data and verifies the user is the one in the system.
 	 * 
