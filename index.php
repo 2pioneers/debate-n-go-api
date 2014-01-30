@@ -53,7 +53,7 @@ $app->post('/userVote', function() use($app) {
 		$votingTopicData = new \Main\Database\VotingTopicDao();
 		$votingTopicData->updateUserVote($optionId, $userId);
 		$votingOptionDao = new \Main\Database\VotingOptionDao();
-		$response = $votingOptionDao->loadAndConvertOptions($votingOptionsIdList);
+		$response = $votingOptionDao->loadAndConvertOptions($optionIds);
 	}
 	else {
 		$response = json_encode(array('status' => '400', 'message' => "Missing input data."));
