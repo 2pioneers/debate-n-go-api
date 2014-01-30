@@ -33,7 +33,7 @@ class LoginController {
 	/**
 	 * Tries to log in via the user.
 	 * 
-	 * @return string JSON encoded string with either a data-filled response or an error response.
+	 * @return array array for JSON encoded string with either a data-filled response or an error response.
 	 */
 	public function attemptLogin() {
 		$returnJsonArray = array();
@@ -54,9 +54,13 @@ class LoginController {
 			$returnJsonArray = $this->createErrorArray("User was not found. Do you have the wrong url?");
 		}
 		
-		return json_encode($returnJsonArray);
+		return $returnJsonArray;
 	}
 	
+	/**
+	 * An error message generator.
+	 * @return array for json_encode.
+	 */
 	private function createErrorArray($message) {
 		return array('status' => '404', 'message' => $message);
 	}

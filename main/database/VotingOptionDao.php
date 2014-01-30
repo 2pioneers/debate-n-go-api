@@ -79,6 +79,22 @@ class VotingOptionDao {
 		
 		return $votingOptionsData;
 	 }
+	 
+	 /**
+	  * Stores the message in the options.
+	  */
+	 public function storeMessageInOptions($messageId, $optionIds) {
+	 	$optionsCollection = $this->coreDao->getOptions();
+		foreach ($optionIds as $optionId) {
+		 	$optionsCollection->update(array("_id" => $optionId), 
+	 			array(
+	 				'$push' => array(
+		 				"messages" => $messageId
+					)
+				)
+			);
+		}
+	 }
 }
 
 ?>
