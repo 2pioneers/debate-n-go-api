@@ -43,7 +43,7 @@ Author: [Justin Walrath](mailto:walrathjaw@gmail.com)
 	});
 
 #####Leave a root parent comment
-	sendData = { user_id: "<crazyLongUserId>", message: "The message", vote_options: <array of the vote options> };
+	sendData = { user_id: "<crazyLongUserId>", message: "The message", vote_options: <array of the vote options>, vote_topic_id: "<topic id" };
 
 	$.ajax({
 		type: "POST",
@@ -60,7 +60,7 @@ Author: [Justin Walrath](mailto:walrathjaw@gmail.com)
 
 	$.ajax({
 		type: "POST",
-		url: "http://url.com/leaveComment/"
+		url: "http://url.com/leaveReply/"
 		data: JSON.stringify(sendData),
 		contentType: "application/json",
 		success: function(data, textStatus, jqXHR) {
