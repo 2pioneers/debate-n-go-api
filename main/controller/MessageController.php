@@ -99,7 +99,7 @@ class MessageController {
 			if($this->checkSession($userId)) {
 				$voteTopicId = new \MongoId($body->vote_topic_id);
 				$votingTopicDao = new \Main\Database\VotingTopicDao();
-				$messageIdDoc = $votingTopicDao->getMessages($voteTopicId);
+				$messageIdDoc = $votingTopicDao->getMessagesByTopicId($voteTopicId);
 				$messages = array();
 				if(!empty($messageIdDoc)) {
 					$messageIds = $messageIdDoc["messages"];
