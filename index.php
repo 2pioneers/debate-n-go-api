@@ -66,13 +66,11 @@ $app->post('/leaveReply', function() use($app) {
 	echo(json_encode($response));
 });
 
-$app->post('/refreshMessages'. function() use($app) {
+$app->post('/refreshMessages', function() use($app) {
 	$body = $app->request()->getBody();
 	$body = json_decode($body);
-	$votingController = new \Main\Controller\VotingController();
-	$messageIds = $votingController->
 	$messageController = new \Main\Controller\MessageController();
-	$response = $messageController->leaveResponse($body);
+	$response = $messageController->getMessageIds($body);
 	$app->response()->header("Content-Type", "application/json");
 	echo(json_encode($response));
 });
