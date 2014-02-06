@@ -125,8 +125,8 @@ class VotingTopicDao {
 	  */
 	 public function getMessagesByTopicId($topicId) {
 	 	$optionsCollection = $this->coreDao->getVoting_topics();
-	 	$optionsCollection->findOne(array("_id" => $topicId), 
- 			array('messages' => 1)
+	 	return $optionsCollection->findOne(array("_id" => $topicId), 
+ 			array('messages' => true)
 		);
 	 }
 }
