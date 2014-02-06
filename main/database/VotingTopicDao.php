@@ -116,6 +116,19 @@ class VotingTopicDao {
 			)
 		);
 	}
+	 
+	 /**
+	  * Gets the messages by the topic id.
+	  * 
+	  * @param MongoId $topicId The voting topic id.
+	  * @return mixed Mongodoc of all the message ids for the voting topic. 
+	  */
+	 public function getMessagesByTopicId($topicId) {
+	 	$optionsCollection = $this->coreDao->getVoting_topics();
+	 	$optionsCollection->findOne(array("_id" => $topicId), 
+ 			array('messages' => 1)
+		);
+	 }
 }
 
 ?>

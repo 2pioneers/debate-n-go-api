@@ -88,6 +88,36 @@ class MessageController {
 		}
 		return false;
 	}
+	
+	/**
+	 * Gets the message ids from the database.
+	 */
+	public function getMessageIds($body) {
+		$response = null;
+		if(property_exists($body,'vote_topic_id') && property_exists($body, 'user_id')) {
+			$userId = new \MongoId($body->user_id);
+			if($this->checkSession($userId)) {
+				$voteTopicId = new \MongoId($body->vote_topic_id);
+				$votingTopicDao = new \Main\Database\VotingTopicDao();
+				$messageIdDoc = $votingTopicDao->getMessages($voteTopicId);
+				$messages = array();
+				if(!empty($messageIdDoc)) {
+					$messageIds = $messageIdDoc["messages"];
+					$messageDao = new \Main\Database\MessageDao();
+					$messages = $messageDao->loadAndConvertMessages($messageIds);
+				}	
+				$response = array('status' => 'ok', 'messages' => $messages);
+			}
+			else {
+				$response = array('status' => '403', 'message' => "Forbidden");
+			}
+		}
+		else {
+			$response = array('status' => '400', 'message' => "Missing input data.");
+		}
+		
+		return $response;
+	}
 }
 
 ?>

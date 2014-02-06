@@ -47,7 +47,6 @@ class VotingController {
 		}
 		return false;
 	}
-	
 }
 
 ?>
