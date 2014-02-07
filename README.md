@@ -80,6 +80,19 @@ Author: [Justin Walrath](mailto:walrathjaw@gmail.com)
 			//Process the results here.
 		}
 	});
+	
+#####Get all messages for topic option
+	sendData = { user_id: "<crazyLongUserId>", option_id: "<option id>" };
+
+	$.ajax({
+		type: "POST",
+		url: "http://url.com/refreshOptionMessageKeys/"
+		data: JSON.stringify(sendData),
+		contentType: "application/json",
+		success: function(data, textStatus, jqXHR) {
+			//Process the results here.
+		}
+	});
 
 ###Testing
 ####Run Unit tests
