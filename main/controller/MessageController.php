@@ -131,7 +131,8 @@ class MessageController {
 			if($this->checkSession($userId)) {
 				$voteOptionId = new \MongoId($body->option_id);
 				$votingOptionDao = new \Main\Database\VotingOptionDao();
-				$messageIds = $votingOptionDao->getOptionById($voteTopicId);	
+				$votingOption = $votingOptionDao->getOptionById($voteTopicId);
+				$messageIds = $votingOption->getMessages();
 				$response = array('status' => 'ok', 'messageIds' => $messageIds);
 			}
 			else {
