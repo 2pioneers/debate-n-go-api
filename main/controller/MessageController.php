@@ -90,9 +90,10 @@ class MessageController {
 	}
 	
 	/**
-	 * Gets the message ids from the database.
+	 * Gets the messages from the database.
+	 * @param mixed $body The decoded JSON
 	 */
-	public function getMessageIds($body) {
+	public function getMessages($body) {
 		$response = null;
 		if(property_exists($body,'vote_topic_id') && property_exists($body, 'user_id')) {
 			$userId = new \MongoId($body->user_id);
@@ -107,6 +108,31 @@ class MessageController {
 					$messages = $messageDao->loadAndConvertMessages($messageIds);
 				}	
 				$response = array('status' => 'ok', 'messages' => $messages);
+			}
+			else {
+				$response = array('status' => '403', 'message' => "Forbidden");
+			}
+		}
+		else {
+			$response = array('status' => '400', 'message' => "Missing input data.");
+		}
+		
+		return $response;
+	}
+	
+	/**
+	 * Gets the message ids from the database.
+	 * @param mixed $body The decoded JSON
+	 */
+	public function getMessageIds($body) {
+		$response = null;
+		if(property_exists($body,'option_id') && property_exists($body, 'user_id')) {
+			$userId = new \MongoId($body->user_id);
+			if($this->checkSession($userId)) {
+				$voteOptionId = new \MongoId($body->option_id);
+				$votingOptionDao = new \Main\Database\VotingOptionDao();
+				$messageIds = $votingOptionDao->getOptionById($voteTopicId);	
+				$response = array('status' => 'ok', 'messageIds' => $messageIds);
 			}
 			else {
 				$response = array('status' => '403', 'message' => "Forbidden");

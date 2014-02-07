@@ -70,6 +70,15 @@ $app->post('/refreshMessages', function() use($app) {
 	$body = $app->request()->getBody();
 	$body = json_decode($body);
 	$messageController = new \Main\Controller\MessageController();
+	$response = $messageController->getMessages($body);
+	$app->response()->header("Content-Type", "application/json");
+	echo(json_encode($response));
+});
+
+$app->post('/refreshOptionMessageKeys', function() use($app) {
+	$body = $app->request()->getBody();
+	$body = json_decode($body);
+	$messageController = new \Main\Controller\MessageController();
 	$response = $messageController->getMessageIds($body);
 	$app->response()->header("Content-Type", "application/json");
 	echo(json_encode($response));
