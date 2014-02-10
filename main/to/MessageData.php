@@ -130,7 +130,7 @@ class MessageData implements \JsonSerializable {
 	 * @return string The tagline.
 	 */
 	public function getTitle() {
-		return $this->message;
+		return $this->title;
 	}
 	
 	/**
