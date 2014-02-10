@@ -43,7 +43,7 @@ Author: [Justin Walrath](mailto:walrathjaw@gmail.com)
 	});
 
 #####Leave a root parent comment
-	sendData = { user_id: "<crazyLongUserId>", message: "The message", vote_options: <array of the vote options>, vote_topic_id: "<topic id>" };
+	sendData = { user_id: "<crazyLongUserId>", title: "The tagline/title of the message", message: "The message", vote_options: <array of the vote options>, vote_topic_id: "<topic id>" };
 
 	$.ajax({
 		type: "POST",

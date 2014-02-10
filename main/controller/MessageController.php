@@ -14,7 +14,8 @@ class MessageController {
 		 * 5. Return all options and messages
 		 */
 		$response = null;
-		if(property_exists($body,'user_id') && 
+		if(property_exists($body,'user_id') &&
+			property_exists($body, 'title') &&
 			property_exists($body,'message') && 
 			property_exists($body,'vote_options') && 
 			property_exists($body, 'vote_topic_id')) {
@@ -27,7 +28,7 @@ class MessageController {
 				}
 				
 				$messageDao = new \Main\Database\MessageDao();
-				$messageId = $messageDao->storeMessage($userId, $body->message);
+				$messageId = $messageDao->storeMessage($userId, $body->title, $body->message);
 				
 				$voteTopicDao = new \Main\Database\VotingTopicDao();
 				$voteTopicDao->storeNewMessage($voteTopicId, $messageId);

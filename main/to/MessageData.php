@@ -21,6 +21,11 @@ class MessageData implements \JsonSerializable {
 	private $message;
 	
 	/**
+	 * The tagline for the main message.
+	 */
+	private $title;
+	
+	/**
 	 * Date of the message.
 	 */
 	private $postDate;
@@ -35,22 +40,30 @@ class MessageData implements \JsonSerializable {
 	 * 
 	 * @param MongoId $id The message's id.
 	 * @param mixed $user The User's data. First the Id then the UserData -id.
+	 * @param string $title The tagline of the message.
 	 * @param string $message The message.
 	 * @param MongoDate $postDate The posting date.
 	 * @param array $children The responses to the message.
 	 */
-	public function __construct($id, $user, $message, $postDate, $children) {
+	public function __construct($id, $user, $title, $message, $postDate, $children) {
 		$this->id = $id;
 		$this->user = $user;
+		$this->title = $title;
 		$this->message = $message;
 		$this->postDate = $postDate;
 		$this->children = $children;
 	}
 	
+	/**
+	 * The json encode serializing function.
+	 * 
+	 * @return array The serializable map of the object.
+	 */
 	public function jsonSerialize() {
 		return array(
 			'id' => $this->getId()->__toString(),
 			'user' => $this->getUser(),
+			'title' => $this->getTitle(),
 			'message' => $this->getMessage(),
 			'postDate' => $this->getPostDate(),
 			'children' => $this->getChildren()
@@ -109,6 +122,24 @@ class MessageData implements \JsonSerializable {
 	 */
 	public function setMessage($message) {
 		$this->message = $message;
+	}
+	
+	/**
+	 * Gets the tagline.
+	 * 
+	 * @return string The tagline.
+	 */
+	public function getTitle() {
+		return $this->title;
+	}
+	
+	/**
+	 * Sets the tagline.
+	 * 
+	 * @param string $title The tagline to set.
+	 */
+	public function setTitle($title) {
+		$this->title = $title;
 	}
 	
 	/**

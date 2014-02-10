@@ -76,6 +76,7 @@ class MessageDao {
 	 		$messageData = new \Main\To\MessageData(
 				$messageDataDoc["_id"],
 				$messageDataDoc["user"],
+				$messageDataDoc["title"],
 				$messageDataDoc["message"],
 				$messageDataDoc["postDate"],
 				$messageDataDoc["children"]
@@ -91,11 +92,12 @@ class MessageDao {
 	  * @param string $message The message to set.
 	  * @return MongoId The new objects mongo id.
 	  */
-	 public function storeMessage($userId, $message) {
+	 public function storeMessage($userId, $title, $message) {
 	 	$newId = new \MongoId();
 	 	$this->coreDao->getMessages()->insert(
 	 		array("_id" => $newId, 
-				"user" => $userId, 
+				"user" => $userId,
+				"title" => $title,
 				"message" => $message, 
 				"postDate" => new \MongoDate(), 
 				"children" => array()
