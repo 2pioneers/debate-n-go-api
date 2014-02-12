@@ -13,6 +13,12 @@ class MessageController {
 		 * 4. store in each voting option.
 		 * 5. Return all options and messages
 		 */
+		 
+		ob_start();
+		var_dump($someVar);
+		$result = ob_get_clean();
+		error_log($result);
+		
 		$response = null;
 		if(property_exists($body,'user') &&
 			property_exists($body->user, 'id') &&
