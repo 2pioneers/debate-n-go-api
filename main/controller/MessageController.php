@@ -15,7 +15,7 @@ class MessageController {
 		 */
 		 
 		ob_start();
-		var_dump($someVar);
+		var_dump($body);
 		$result = ob_get_clean();
 		error_log($result);
 		
