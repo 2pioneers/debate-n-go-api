@@ -21,12 +21,12 @@ class MessageController {
 		
 		$response = null;
 		if(property_exists($body,'user') &&
-			property_exists($body->user, 'id') &&
+			property_exists($body->user, '$id') &&
 			property_exists($body, 'title') &&
 			property_exists($body,'message') && 
 			property_exists($body,'vote_options') && 
 			property_exists($body, 'vote_topic_id')) {
-			$userId = new \MongoId($body->user->id);
+			$userId = new \MongoId($body->user->{'$id'});
 			if($this->checkSession($userId)) {
 				$voteTopicId = new \MongoId($body->vote_topic_id);
 				$optionIds = array();
@@ -62,10 +62,10 @@ class MessageController {
 	 public function leaveResponse($body) {
 		$response = null;
 		if(property_exists($body,'user') &&
-			property_exists($body->user, 'id') &&
+			property_exists($body->user, '$id') &&
 			property_exists($body,'message') && 
 			property_exists($body,'parent_id')) {
-			$userId = new \MongoId($body->user->id);
+			$userId = new \MongoId($body->user->{'$id'});
 			if($this->checkSession($userId)) {
 				$parentId = new \MongoId($body->parent_id);
 				
@@ -104,8 +104,8 @@ class MessageController {
 	 */
 	public function getMessages($body) {
 		$response = null;
-		if(property_exists($body,'vote_topic_id') && property_exists($body, 'user') && property_exists($body->user, 'id')) {
-			$userId = new \MongoId($body->user->id);
+		if(property_exists($body,'vote_topic_id') && property_exists($body, 'user') && property_exists($body->user, '$id')) {
+			$userId = new \MongoId($body->user->{'$id'});
 			if($this->checkSession($userId)) {
 				$voteTopicId = new \MongoId($body->vote_topic_id);
 				$votingTopicDao = new \Main\Database\VotingTopicDao();
@@ -135,8 +135,8 @@ class MessageController {
 	 */
 	public function getMessageIds($body) {
 		$response = null;
-		if(property_exists($body,'option_id') && property_exists($body, 'user') && property_exists($body->user, 'id')) {
-			$userId = new \MongoId($body->user->id);
+		if(property_exists($body,'option_id') && property_exists($body, 'user') && property_exists($body->user, '$id')) {
+			$userId = new \MongoId($body->user->{'$id'});
 			if($this->checkSession($userId)) {
 				$voteOptionId = new \MongoId($body->option_id);
 				$votingOptionDao = new \Main\Database\VotingOptionDao();
