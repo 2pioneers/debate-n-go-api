@@ -53,13 +53,12 @@ class UserData implements \JsonSerializable {
 	 */
 	public function jsonSerialize() {
 		return array(
-			$this->getId()->__toString() => array (
 			'id' => $this->getId()->__toString(),
 			'nickname' => $this->getNickname(),
 			'streetAddress' => $this->getStreetAddress(),
 			'uniqueUrlExtension' => $this->getUniqueUrlExtension(),
 			'email' => $this->getEmail()
-		));
+		);
 	}
 	
 	/**
