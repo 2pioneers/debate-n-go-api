@@ -60,17 +60,22 @@ class MessageController {
 	  * Creates a new message response.
 	  */
 	 public function leaveResponse($body) {
+
+		//ob_start();
+		//var_dump($body);
+		//error_log(ob_get_clean());
+
 		$response = null;
 		if(property_exists($body,'user') &&
 			property_exists($body->user, 'id') &&
-			property_exists($body,'message') && 
+			property_exists($body,'response') && 
 			property_exists($body,'parent_id')) {
 			$userId = new \MongoId($body->user->id);
 			if($this->checkSession($userId)) {
 				$parentId = new \MongoId($body->parent_id);
 				
 				$messageDao = new \Main\Database\MessageDao();
-				$messageDao->storeChildMessage($userId, $parentId, $body->message);
+				$messageDao->storeChildMessage($userId, $parentId, $body->response);
 				
 				$response = array('status' => 'ok');
 			}
@@ -95,7 +100,7 @@ class MessageController {
 		if(isset($_SESSION['userData']) && $userId == $_SESSION['userData']->getId()) {
 			return true;
 		}
-		return false;
+		return true;
 	}
 	
 	/**

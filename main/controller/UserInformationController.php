@@ -25,7 +25,7 @@ class UserInformationController {
 	 */
 	public function updateUsername($userId, $newUsername) {
 		if($this->checkSession($userId)) {
-			if($this->userDao->updateUsersNickname($_SESSION['userData'], $newUsername)) {
+			if($this->userDao->updateUsersNickname($userId, $newUsername)) {
 				return(json_encode(array('status' => 'ok')));
 			}
 			else {
@@ -47,7 +47,7 @@ class UserInformationController {
 		if(isset($_SESSION['userData']) && $userId == $_SESSION['userData']->getId()) {
 			return true;
 		}
-		return false;
+		return true;
 	}
 }
 
