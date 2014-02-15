@@ -45,11 +45,21 @@ class VotingOptionsData implements \JsonSerializable {
 	 * @return array array representation of the data object.
 	 */
 	public function jsonSerialize() {
+		$convertedUsers = array();
+		foreach($this->getUsers() as $user) {
+			array_push($convertedUsers, array("id" => $user->__toString()));
+		}
+
+		$convertedMessages = array();
+		foreach($this->getMessages() as $message) {
+			array_push($convertedMessages, array("id" => $message->__toString()));
+		}
+
 		return array(
 			'id' => $this->getId()->__toString(),
 			'description' => $this->getDescription(),
-			'users' => $this->getUsers(),
-			'messages' => $this->getMessages()
+			'users' => $convertedUsers,
+			'messages' => $convertedMessages
 		);
 	}
 	

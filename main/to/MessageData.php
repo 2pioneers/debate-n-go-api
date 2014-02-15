@@ -60,9 +60,16 @@ class MessageData implements \JsonSerializable {
 	 * @return array The serializable map of the object.
 	 */
 	public function jsonSerialize() {
+		$convertedChild = array();
+		foreach($this->getChildren() as $child) {
+			$child["user"] = array("id" => $child["user"]->__toString());
+			array_push($convertedChild, $child);
+		}
+		$this->setChildren($convertedChild);
+
 		return array(
 			'id' => $this->getId()->__toString(),
-			'user' => $this->getUser(),
+			'user' => array("id" => $this->getUser()->__toString()),
 			'title' => $this->getTitle(),
 			'message' => $this->getMessage(),
 			'postDate' => $this->getPostDate(),
